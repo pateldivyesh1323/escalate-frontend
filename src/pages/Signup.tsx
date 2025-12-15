@@ -3,29 +3,54 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { login, signInWithGoogle } from '@/lib/authActions';
+import { signup, signInWithGoogle } from '@/lib/authActions';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
-export default function Login() {
+export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const { firebaseUser, loading: authLoading } = useAuth();
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await login(email, password);
-      toast.success('Logged in successfully!');
-      // Navigation will happen automatically via useEffect when firebaseUser updates
+      await signup(email, password);
+      toast.success('Account created successfully!');
     } catch (error: any) {
-      const errorMessage = error?.message || 'An error occurred';
+      // Check for Firebase SDK error format
+      if (error?.code === 'auth/email-already-in-use') {
+        toast.error('This email is already registered. Please sign in instead.');
+        return;
+      }
+      
+      // Check for server API error format
+      if (error?.error?.message === 'EMAIL_EXISTS' || 
+          error?.response?.data?.error?.message === 'EMAIL_EXISTS' ||
+          (typeof error?.message === 'string' && error.message.includes('EMAIL_EXISTS'))) {
+        toast.error('This email is already registered. Please sign in instead.');
+        return;
+      }
+      
+      // Default error message
+      const errorMessage = error?.message || 'An error occurred while creating your account';
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -36,17 +61,17 @@ export default function Login() {
     setGoogleLoading(true);
     try {
       await signInWithGoogle();
-      toast.success('Logged in with Google successfully!');
+      toast.success('Signed up with Google successfully!');
       // Navigation will happen automatically via useEffect when firebaseUser updates
     } catch (error: any) {
-      const errorMessage = error?.message || 'Google sign-in failed';
+      const errorMessage = error?.message || 'Google sign-up failed';
       toast.error(errorMessage);
     } finally {
       setGoogleLoading(false);
     }
   };
 
-  // Don't render login form if already logged in
+  // Don't render signup form if already logged in
   if (!authLoading && firebaseUser) {
     return null;
   }
@@ -58,14 +83,14 @@ export default function Login() {
           {/* Header */}
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold text-foreground tracking-tight">
-              Welcome Back
+              Create Account
             </h1>
             <p className="text-sm text-muted-foreground">
-              Sign in to your account to continue
+              Sign up to get started
             </p>
           </div>
 
-          {/* Login Form */}
+          {/* Signup Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-foreground">
@@ -97,6 +122,25 @@ export default function Login() {
                 disabled={loading || googleLoading}
                 className="h-11 transition-all duration-200 hover:border-primary/50 focus:border-primary"
               />
+              <p className="text-xs text-muted-foreground">
+                Must be at least 6 characters
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-foreground">
+                Confirm Password
+              </Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm your password"
+                required
+                disabled={loading || googleLoading}
+                className="h-11 transition-all duration-200 hover:border-primary/50 focus:border-primary"
+              />
             </div>
 
             <Button
@@ -107,10 +151,10 @@ export default function Login() {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
+                  Creating account...
                 </>
               ) : (
-                'Sign In'
+                'Sign Up'
               )}
             </Button>
           </form>
@@ -125,7 +169,7 @@ export default function Login() {
             </div>
           </div>
 
-          {/* Google Sign In */}
+          {/* Google Sign Up */}
           <Button
             variant="outline"
             onClick={handleGoogleSignIn}
@@ -135,7 +179,7 @@ export default function Login() {
             {googleLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Signing in...
+                Signing up...
               </>
             ) : (
               <>
@@ -157,19 +201,19 @@ export default function Login() {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                Sign in with Google
+                Sign up with Google
               </>
             )}
           </Button>
 
-          {/* Link to Signup */}
+          {/* Link to Login */}
           <div className="text-center text-sm">
-            <span className="text-muted-foreground">Don't have an account? </span>
+            <span className="text-muted-foreground">Already have an account? </span>
             <Link
-              to="/signup"
+              to="/login"
               className="text-primary hover:text-primary/80 font-medium transition-colors"
             >
-              Sign up
+              Sign in
             </Link>
           </div>
         </div>
