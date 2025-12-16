@@ -31,3 +31,13 @@ apiClient.interceptors.request.use((config) => {
   }
   return config;
 });
+
+export const createModule = async (data: any) => {
+  const res = await apiClient.post<{ data: any }>(`/api/modules/create`, data);
+  return res.data.data;
+};
+
+export const getAllModules = async () => {
+  const res = await apiClient.get<{ data: any[] }>(`/api/modules/getall`);
+  return res.data.data;
+};

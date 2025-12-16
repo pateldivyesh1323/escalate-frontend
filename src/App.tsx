@@ -3,6 +3,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Introduction from './pages/Introduction';
+import OrganizationSendTest from './pages/OrganizationSendTest';
+import OrganizationViewTests from './pages/OrganizationViewTests';
 import PrivateRouteWrapper from './wrappers/PrivateRouteWrapper';
 import PublicRouteWrapper from './wrappers/PublicRouteWrapper';
 import { Toaster } from "./components/ui/sonner";
@@ -40,6 +42,22 @@ const router = createBrowserRouter([
       <PrivateRouteWrapper> 
         <Home />
       </PrivateRouteWrapper>
+  },
+  {
+    path: '/assign-test',
+    element: (
+      <PrivateRouteWrapper>
+        <OrganizationSendTest />
+      </PrivateRouteWrapper>
+    ),
+  },
+  {
+    path: '/manage-tests',
+    element: (
+      <PrivateRouteWrapper>
+        <OrganizationViewTests />
+      </PrivateRouteWrapper>
+    ),
   },
 ]);
 
