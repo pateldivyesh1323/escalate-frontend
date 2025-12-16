@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
 import { Navigate } from "react-router";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../assets/animation/LoadingSpinner";
 
 export default function RoleSelectionRouteWrapper({
   children,
