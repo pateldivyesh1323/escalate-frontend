@@ -7,41 +7,48 @@ import OrganizationSendTest from './pages/OrganizationSendTest';
 import OrganizationViewTests from './pages/OrganizationViewTests';
 import PrivateRouteWrapper from './wrappers/PrivateRouteWrapper';
 import PublicRouteWrapper from './wrappers/PublicRouteWrapper';
+import RoleSelectionRouteWrapper from './wrappers/RoleSelectionRouteWrapper';
 import { Toaster } from "./components/ui/sonner";
-import RoleSelection from './pages/RoleSelection';
+import RoleSelection from "./pages/RoleSelection";
+import DashboardLayout from "./layouts/DashboardLayout";
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Introduction />,
   },
   {
-    path: '/login',
-    element: 
+    path: "/login",
+    element: (
       <PublicRouteWrapper>
         <Login />
-      </PublicRouteWrapper>,
+      </PublicRouteWrapper>
+    ),
   },
   {
-    path: '/signup',
-    element: 
+    path: "/signup",
+    element: (
       <PublicRouteWrapper>
         <Signup />
-      </PublicRouteWrapper>,
+      </PublicRouteWrapper>
+    ),
   },
   {
     path: '/select-role',
     element:
-      <PrivateRouteWrapper requireRoleSelection={false}>
+      <RoleSelectionRouteWrapper>
         <RoleSelection />
-      </PrivateRouteWrapper>
+      </RoleSelectionRouteWrapper>
   },
   {
-    path: '/home',
-    element:
-      <PrivateRouteWrapper> 
-        <Home />
+    path: "/home",
+    element: (
+      <PrivateRouteWrapper>
+        <DashboardLayout>
+          <Home />
+        </DashboardLayout>
       </PrivateRouteWrapper>
+    ),
   },
   {
     path: '/assign-test',
@@ -70,4 +77,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

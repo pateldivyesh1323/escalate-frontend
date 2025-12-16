@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { login, signInWithGoogle } from '@/lib/authActions';
-import { useAuth } from '@/context/AuthContext';
-import { toast } from 'sonner';
-import { Loader2, Brain } from 'lucide-react';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { login, signInWithGoogle } from "@/lib/authActions";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
+import { Loader2, Brain } from "lucide-react";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const { firebaseUser, loading: authLoading } = useAuth();
@@ -21,9 +21,9 @@ export default function Login() {
 
     try {
       await login(email, password);
-      toast.success('Logged in successfully!');
+      toast.success("Logged in successfully!");
     } catch (error: any) {
-      const errorMessage = error?.message || 'An error occurred';
+      const errorMessage = error?.message || "An error occurred";
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -34,9 +34,9 @@ export default function Login() {
     setGoogleLoading(true);
     try {
       await signInWithGoogle();
-      toast.success('Logged in with Google successfully!');
+      toast.success("Logged in with Google successfully!");
     } catch (error: any) {
-      const errorMessage = error?.message || 'Google sign-in failed';
+      const errorMessage = error?.message || "Google sign-in failed";
       toast.error(errorMessage);
     } finally {
       setGoogleLoading(false);
@@ -54,21 +54,21 @@ export default function Login() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-amber-500/10" />
         <div className="absolute top-0 left-0 w-96 h-96 bg-primary/30 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2" />
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-amber-500/20 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2" />
-        
+
         <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
           <div className="flex items-center gap-3 mb-8">
             <div className="p-2.5 rounded-xl bg-primary">
               <Brain className="h-8 w-8 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold text-white">Escalated</span>
+            <span className="text-2xl font-bold text-white">EscalateConvo</span>
           </div>
-          
+
           <h1 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
             Welcome back to the future of hiring
           </h1>
           <p className="text-lg text-slate-400 leading-relaxed">
-            Sign in to continue testing candidates with AI-powered roleplay scenarios 
-            that reveal true customer service potential.
+            Sign in to continue testing candidates with AI-powered roleplay
+            scenarios that reveal true customer service potential.
           </p>
         </div>
       </div>
@@ -81,7 +81,9 @@ export default function Login() {
             <div className="p-2 rounded-lg bg-primary">
               <Brain className="h-6 w-6 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-foreground">Escalated</span>
+            <span className="text-xl font-bold text-foreground">
+              EscalateConvo
+            </span>
           </div>
 
           <div className="bg-background lg:bg-card rounded-2xl lg:shadow-xl lg:border lg:border-border p-0 lg:p-10 space-y-8">
@@ -114,7 +116,10 @@ export default function Login() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-foreground font-medium">
+                <Label
+                  htmlFor="password"
+                  className="text-foreground font-medium"
+                >
                   Password
                 </Label>
                 <Input
@@ -140,7 +145,7 @@ export default function Login() {
                     Signing in...
                   </>
                 ) : (
-                  'Sign In'
+                  "Sign In"
                 )}
               </Button>
             </form>
@@ -151,7 +156,9 @@ export default function Login() {
                 <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background lg:bg-card px-3 text-muted-foreground">Or continue with</span>
+                <span className="bg-background lg:bg-card px-3 text-muted-foreground">
+                  Or continue with
+                </span>
               </div>
             </div>
 
@@ -194,7 +201,9 @@ export default function Login() {
 
             {/* Link to Signup */}
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">Don't have an account? </span>
+              <span className="text-muted-foreground">
+                Don't have an account?{" "}
+              </span>
               <Link
                 to="/signup"
                 className="text-primary hover:text-primary/80 font-medium transition-colors"
