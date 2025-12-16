@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button';
-import { User, Building2, ArrowRight, Check } from 'lucide-react';
-import type { Role } from './types';
+import { Button } from "@/components/ui/button";
+import { User, Building2, ArrowRight, Check } from "lucide-react";
+import type { Role } from "./types";
 
 // ============================================================================
 // Role Selection Step
@@ -13,11 +13,11 @@ interface RoleSelectionStepProps {
   loading: boolean;
 }
 
-export function RoleSelectionStep({ 
-  selectedRole, 
-  onRoleSelect, 
-  onContinue, 
-  loading 
+export function RoleSelectionStep({
+  selectedRole,
+  onRoleSelect,
+  onContinue,
+  loading,
 }: RoleSelectionStepProps) {
   return (
     <div className="space-y-8">
@@ -37,16 +37,16 @@ export function RoleSelectionStep({
           title="Test Taker"
           description="Take customer service assessments and improve your skills through AI-powered roleplay scenarios"
           icon={User}
-          isSelected={selectedRole === 'USER'}
-          onSelect={() => onRoleSelect('USER')}
+          isSelected={selectedRole === "USER"}
+          onSelect={() => onRoleSelect("USER")}
           disabled={loading}
         />
         <RoleCard
           title="Company Admin"
           description="Create assessments, invite candidates, and evaluate their customer service abilities"
           icon={Building2}
-          isSelected={selectedRole === 'ORGANIZATION'}
-          onSelect={() => onRoleSelect('ORGANIZATION')}
+          isSelected={selectedRole === "ORGANIZATION"}
+          onSelect={() => onRoleSelect("ORGANIZATION")}
           disabled={loading}
         />
       </div>
@@ -79,13 +79,13 @@ interface RoleCardProps {
   disabled: boolean;
 }
 
-function RoleCard({ 
-  title, 
-  description, 
-  icon: Icon, 
-  isSelected, 
-  onSelect, 
-  disabled 
+function RoleCard({
+  title,
+  description,
+  icon: Icon,
+  isSelected,
+  onSelect,
+  disabled,
 }: RoleCardProps) {
   return (
     <button
@@ -93,19 +93,24 @@ function RoleCard({
       disabled={disabled}
       className={`
         group relative p-8 rounded-xl border-2 text-left transition-all duration-200
-        ${isSelected
-          ? 'border-primary bg-primary/5 shadow-lg'
-          : 'border-slate-200 hover:border-primary/50 hover:shadow-md'
+        ${
+          isSelected
+            ? "border-primary bg-primary/5 shadow-lg"
+            : "border-slate-200 hover:border-primary/50 hover:shadow-md"
         }
         disabled:opacity-50 disabled:cursor-not-allowed
       `}
     >
       <div className="flex flex-col items-center space-y-4">
-        <div className={`
+        <div
+          className={`
           p-4 rounded-full transition-colors
-          ${isSelected ? 'bg-primary/10' : 'bg-slate-100 group-hover:bg-primary/5'}
-        `}>
-          <Icon className={`h-10 w-10 ${isSelected ? 'text-primary' : 'text-slate-600'}`} />
+          ${isSelected ? "bg-primary/10" : "bg-slate-100 group-hover:bg-primary/5"}
+        `}
+        >
+          <Icon
+            className={`h-10 w-10 ${isSelected ? "text-primary" : "text-slate-600"}`}
+          />
         </div>
         <div className="text-center space-y-2">
           <h3 className="text-xl font-semibold text-foreground">{title}</h3>
@@ -126,4 +131,3 @@ function RoleCard({
     </button>
   );
 }
-

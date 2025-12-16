@@ -1,18 +1,18 @@
-import { 
+import {
   Briefcase,
   GraduationCap,
   HeartPulse,
   ShoppingBag,
   Landmark,
   Cog,
-} from 'lucide-react';
+} from "lucide-react";
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export type Role = 'USER' | 'ORGANIZATION' | null;
-export type Step = 'role' | 'details';
+export type Role = "USER" | "ORGANIZATION" | null;
+export type Step = "role" | "details";
 
 export interface OrganizationType {
   id: string;
@@ -26,41 +26,40 @@ export interface OrganizationType {
 // ============================================================================
 
 export const ORGANIZATION_TYPES: OrganizationType[] = [
-  { 
-    id: 'TECHNOLOGY', 
-    label: 'Technology', 
+  {
+    id: "TECHNOLOGY",
+    label: "Technology",
     icon: Cog,
-    description: 'Software, IT services, SaaS'
+    description: "Software, IT services, SaaS",
   },
-  { 
-    id: 'RETAIL', 
-    label: 'Retail & E-commerce', 
+  {
+    id: "RETAIL",
+    label: "Retail & E-commerce",
     icon: ShoppingBag,
-    description: 'Online stores, retail chains'
+    description: "Online stores, retail chains",
   },
-  { 
-    id: 'HEALTHCARE', 
-    label: 'Healthcare', 
+  {
+    id: "HEALTHCARE",
+    label: "Healthcare",
     icon: HeartPulse,
-    description: 'Hospitals, clinics, health services'
+    description: "Hospitals, clinics, health services",
   },
-  { 
-    id: 'FINANCE', 
-    label: 'Finance & Banking', 
+  {
+    id: "FINANCE",
+    label: "Finance & Banking",
     icon: Landmark,
-    description: 'Banks, insurance, fintech'
+    description: "Banks, insurance, fintech",
   },
-  { 
-    id: 'EDUCATION', 
-    label: 'Education', 
+  {
+    id: "EDUCATION",
+    label: "Education",
     icon: GraduationCap,
-    description: 'Schools, universities, e-learning'
+    description: "Schools, universities, e-learning",
   },
-  { 
-    id: 'OTHER', 
-    label: 'Other', 
+  {
+    id: "OTHER",
+    label: "Other",
     icon: Briefcase,
-    description: 'Other industry types'
+    description: "Other industry types",
   },
 ];
-

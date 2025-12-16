@@ -1,17 +1,9 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import { 
-  Menu, 
-  X, 
-  Home, 
-  ClipboardList, 
-  Send,
-  FileText,
-  LogOut
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { Menu, X, Home, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,18 +12,12 @@ export default function Sidebar() {
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-  const userMenuItems = [
-    { path: '/home', icon: Home, label: 'Home' },
-    { path: '/my-tests', icon: ClipboardList, label: 'My Tests' },
-  ];
+  const userMenuItems = [{ path: "/home", icon: Home, label: "Home" }];
 
-  const orgMenuItems = [
-    { path: '/home', icon: Home, label: 'Home' },
-    { path: '/assign-test', icon: Send, label: 'Assign Test' },
-    { path: '/manage-tests', icon: FileText, label: 'Manage Tests' },
-  ];
+  const orgMenuItems = [{ path: "/home", icon: Home, label: "Home" }];
 
-  const menuItems = user?.type === 'ORGANIZATION' ? orgMenuItems : userMenuItems;
+  const menuItems =
+    user?.type === "ORGANIZATION" ? orgMenuItems : userMenuItems;
 
   const handleLogout = async () => {
     await logout();
@@ -63,7 +49,7 @@ export default function Sidebar() {
         className={`
           fixed top-0 left-0 h-full w-72 bg-white shadow-2xl z-40
           transform transition-transform duration-300 ease-in-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
         <div className="flex flex-col h-full">
@@ -71,20 +57,22 @@ export default function Sidebar() {
             <div className="flex items-center gap-3">
               {user?.photoURL ? (
                 <Avatar className="h-12 w-12">
-                  <AvatarImage src={user.photoURL}/>
+                  <AvatarImage src={user.photoURL} />
                   <AvatarFallback>{user.name?.[0]}</AvatarFallback>
                 </Avatar>
               ) : (
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-green-600 flex items-center justify-center text-white font-bold">
-                  {user?.name?.[0] || 'U'}
+                <div className="h-12 w-12 rounded-full bg-linear-to-br from-primary to-green-600 flex items-center justify-center text-white font-bold">
+                  {user?.name?.[0] || "U"}
                 </div>
               )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground truncate">
-                  {user?.name || 'User'}
+                  {user?.name || "User"}
                 </p>
                 <p className="text-xs text-muted-foreground capitalize">
-                  {user?.type === 'ORGANIZATION' ? 'Company Admin' : 'Test Taker'}
+                  {user?.type === "ORGANIZATION"
+                    ? "Company Admin"
+                    : "Test Taker"}
                 </p>
               </div>
             </div>
@@ -95,7 +83,7 @@ export default function Sidebar() {
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
-                
+
                 return (
                   <li key={item.path}>
                     <Link
@@ -104,9 +92,10 @@ export default function Sidebar() {
                       className={`
                         flex items-center gap-3 px-4 py-3 rounded-lg
                         transition-all duration-200
-                        ${isActive
-                          ? 'bg-primary text-primary-foreground shadow-md'
-                          : 'text-foreground hover:bg-muted'
+                        ${
+                          isActive
+                            ? "bg-primary text-primary-foreground shadow-md"
+                            : "text-foreground hover:bg-muted"
                         }
                       `}
                     >

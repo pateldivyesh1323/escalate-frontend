@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userQueryEnabled, setUserQueryEnabled] = useState(false);
   const [needsRoleSelection, setNeedsRoleSelection] = useState(() => {
     // Initialize from localStorage
-    return localStorage.getItem('needsRoleSelection') === 'true';
+    return localStorage.getItem("needsRoleSelection") === "true";
   });
 
   const { data: user, isLoading: userLoading } = useGetUser(userQueryEnabled);
@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       if (fbUser) {
         setFirebaseUser(fbUser);
-        
+
         try {
           const token = await fbUser.getIdToken();
           setToken(token);
@@ -73,19 +73,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
           if (!alreadyRegistered) {
             // First time - call register endpoint and check newUser flag
-            const response = await apiClient.post<RegisterResponse>('/api/auth/register');
+            const response =
+              await apiClient.post<RegisterResponse>("/api/auth/register");
             const isNewUser = response.data.data.newUser;
-            
+
             // Store registration status
-            localStorage.setItem(registrationKey, 'true');
-            
+            localStorage.setItem(registrationKey, "true");
+
             // Only set needsRoleSelection if this is a genuinely new user
             if (isNewUser) {
-              localStorage.setItem('needsRoleSelection', 'true');
+              localStorage.setItem("needsRoleSelection", "true");
               setNeedsRoleSelection(true);
             } else {
               // Existing user - clear any stale role selection flag
-              localStorage.removeItem('needsRoleSelection');
+              localStorage.removeItem("needsRoleSelection");
               setNeedsRoleSelection(false);
             }
           }
@@ -125,17 +126,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     if (!firebaseUser) return;
-    
+
     try {
       setAuthLoading(true);
       const uid = firebaseUser.uid;
       await logoutFirebase();
-      
+
       // Clear all user-related storage
       localStorage.removeItem(`registered-${uid}`);
-      localStorage.removeItem('needsRoleSelection');
+      localStorage.removeItem("needsRoleSelection");
       queryClient.removeQueries({ queryKey: [QUERY_KEYS.USER.GET_USER] });
-      
+
       toast.success("Successfully logged out");
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Logout failed";
@@ -147,7 +148,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const clearRoleSelectionFlag = () => {
-    localStorage.removeItem('needsRoleSelection');
+    localStorage.removeItem("needsRoleSelection");
     setNeedsRoleSelection(false);
   };
 

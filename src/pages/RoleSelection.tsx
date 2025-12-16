@@ -1,33 +1,37 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
-import { apiClient, queryClient } from '@/lib/apiService';
-import { useAuth } from '@/context/AuthContext';
-import { QUERY_KEYS } from '@/constants';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { apiClient, queryClient } from "@/lib/apiService";
+import { useAuth } from "@/context/AuthContext";
+import { QUERY_KEYS } from "@/constants";
 
 // Components
-import { StepIndicator, RoleSelectionStep, DetailsStep } from '@/components/role-selection';
-import type { Role, Step } from '@/components/role-selection';
+import {
+  StepIndicator,
+  RoleSelectionStep,
+  DetailsStep,
+} from "@/components/role-selection";
+import type { Role, Step } from "@/components/role-selection";
 
 export default function RoleSelection() {
   const navigate = useNavigate();
   const { user, needsRoleSelection, clearRoleSelectionFlag } = useAuth();
-  
+
   // State
-  const [step, setStep] = useState<Step>('role');
+  const [step, setStep] = useState<Step>("role");
   const [selectedRole, setSelectedRole] = useState<Role>(null);
   const [loading, setLoading] = useState(false);
-  
+
   // Form fields
-  const [displayName, setDisplayName] = useState('');
-  const [orgName, setOrgName] = useState('');
-  const [orgType, setOrgType] = useState('');
-  const [orgDescription, setOrgDescription] = useState('');
+  const [displayName, setDisplayName] = useState("");
+  const [orgName, setOrgName] = useState("");
+  const [orgType, setOrgType] = useState("");
+  const [orgDescription, setOrgDescription] = useState("");
 
   // Redirect to home if user doesn't need role selection (prevents back navigation)
   useEffect(() => {
     if (!needsRoleSelection && user) {
-      navigate('/home', { replace: true });
+      navigate("/home", { replace: true });
     }
   }, [needsRoleSelection, user, navigate]);
 
@@ -45,67 +49,70 @@ export default function RoleSelection() {
 
   const handleContinueToDetails = () => {
     if (!selectedRole) {
-      toast.error('Please select a role');
+      toast.error("Please select a role");
       return;
     }
-    setStep('details');
+    setStep("details");
   };
 
   const handleBack = () => {
-    setStep('role');
+    setStep("role");
   };
 
   const handleSubmit = async () => {
     // Validation
-    if (selectedRole === 'USER') {
+    if (selectedRole === "USER") {
       if (!displayName.trim()) {
-        toast.error('Please enter your name');
+        toast.error("Please enter your name");
         return;
       }
     }
 
-    if (selectedRole === 'ORGANIZATION') {
+    if (selectedRole === "ORGANIZATION") {
       if (!orgName.trim()) {
-        toast.error('Please enter your organization name');
+        toast.error("Please enter your organization name");
         return;
       }
       if (!orgType) {
-        toast.error('Please select an organization type');
+        toast.error("Please select an organization type");
         return;
       }
     }
 
     setLoading(true);
-    
+
     try {
-      if (selectedRole === 'ORGANIZATION') {
+      if (selectedRole === "ORGANIZATION") {
         // Upgrade to organization
-        await apiClient.post('/api/auth/upgrade-to-org', {
+        await apiClient.post("/api/auth/upgrade-to-org", {
           orgName: orgName.trim(),
           orgType: orgType,
           orgDescription: orgDescription.trim() || undefined,
         });
       } else {
         // Update user profile (name)
-        await apiClient.post('/api/auth/upgrade-to-org', {
+        await apiClient.post("/api/auth/upgrade-to-org", {
           name: displayName.trim(),
         });
       }
 
       // Refresh user data and clear role selection flag
-      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER.GET_USER] });
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.USER.GET_USER],
+      });
       clearRoleSelectionFlag();
-      
-      toast.success('Account setup complete!');
-      
+
+      toast.success("Account setup complete!");
+
       // Navigate with replace to prevent back navigation
       setTimeout(() => {
-        navigate('/home', { replace: true });
+        navigate("/home", { replace: true });
       }, 500);
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || 'Failed to complete setup';
+      const errorMessage =
+        error?.response?.data?.message || "Failed to complete setup";
       toast.error(errorMessage);
-      console.error('Error setting up account:', error);
+      console.error("Error setting up account:", error);
     } finally {
       setLoading(false);
     }
@@ -121,24 +128,24 @@ export default function RoleSelection() {
       <div className="w-full max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-500">
         {/* Progress Indicator */}
         <div className="flex items-center justify-center gap-3 mb-8">
-          <StepIndicator 
-            stepNumber={1} 
-            label="Select Role" 
-            isActive={step === 'role'} 
-            isCompleted={step === 'details'} 
+          <StepIndicator
+            stepNumber={1}
+            label="Select Role"
+            isActive={step === "role"}
+            isCompleted={step === "details"}
           />
           <div className="w-12 h-0.5 bg-slate-200" />
-          <StepIndicator 
-            stepNumber={2} 
-            label="Details" 
-            isActive={step === 'details'} 
-            isCompleted={false} 
+          <StepIndicator
+            stepNumber={2}
+            label="Details"
+            isActive={step === "details"}
+            isCompleted={false}
           />
         </div>
 
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 sm:p-10">
-          {step === 'role' ? (
+          {step === "role" ? (
             <RoleSelectionStep
               selectedRole={selectedRole}
               onRoleSelect={handleRoleSelect}

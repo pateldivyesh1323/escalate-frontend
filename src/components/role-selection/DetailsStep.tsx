@@ -1,16 +1,16 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Loader2, ArrowLeft, ArrowRight, Check } from 'lucide-react';
-import { ORGANIZATION_TYPES } from './types';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader2, ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ORGANIZATION_TYPES } from "./types";
 
 // ============================================================================
 // Details Step
 // ============================================================================
 
 interface DetailsStepProps {
-  selectedRole: 'USER' | 'ORGANIZATION';
+  selectedRole: "USER" | "ORGANIZATION";
   displayName: string;
   setDisplayName: (name: string) => void;
   orgName: string;
@@ -40,20 +40,19 @@ export function DetailsStep({
   loading,
   existingName,
 }: DetailsStepProps) {
-  const isUser = selectedRole === 'USER';
+  const isUser = selectedRole === "USER";
 
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold text-foreground tracking-tight">
-          {isUser ? 'Complete Your Profile' : 'Organization Details'}
+          {isUser ? "Complete Your Profile" : "Organization Details"}
         </h1>
         <p className="text-muted-foreground">
-          {isUser 
-            ? 'Let us know how to address you'
-            : 'Tell us about your organization'
-          }
+          {isUser
+            ? "Let us know how to address you"
+            : "Tell us about your organization"}
         </p>
       </div>
 
@@ -123,11 +122,11 @@ interface UserDetailsFormProps {
   loading: boolean;
 }
 
-function UserDetailsForm({ 
-  displayName, 
-  setDisplayName, 
-  existingName, 
-  loading 
+function UserDetailsForm({
+  displayName,
+  setDisplayName,
+  existingName,
+  loading,
 }: UserDetailsFormProps) {
   return (
     <div className="space-y-4">
@@ -168,14 +167,14 @@ interface OrganizationDetailsFormProps {
   loading: boolean;
 }
 
-function OrganizationDetailsForm({ 
-  orgName, 
-  setOrgName, 
-  orgType, 
-  setOrgType, 
+function OrganizationDetailsForm({
+  orgName,
+  setOrgName,
+  orgType,
+  setOrgType,
   orgDescription,
   setOrgDescription,
-  loading 
+  loading,
 }: OrganizationDetailsFormProps) {
   return (
     <div className="space-y-6">
@@ -204,7 +203,7 @@ function OrganizationDetailsForm({
           {ORGANIZATION_TYPES.map((type) => {
             const Icon = type.icon;
             const isSelected = orgType === type.id;
-            
+
             return (
               <button
                 key={type.id}
@@ -213,17 +212,22 @@ function OrganizationDetailsForm({
                 disabled={loading}
                 className={`
                   p-4 rounded-lg border-2 text-left transition-all duration-200
-                  ${isSelected
-                    ? 'border-primary bg-primary/5'
-                    : 'border-slate-200 hover:border-primary/50'
+                  ${
+                    isSelected
+                      ? "border-primary bg-primary/5"
+                      : "border-slate-200 hover:border-primary/50"
                   }
                   disabled:opacity-50 disabled:cursor-not-allowed
                 `}
               >
                 <div className="flex items-center gap-3">
-                  <Icon className={`h-5 w-5 ${isSelected ? 'text-primary' : 'text-slate-500'}`} />
+                  <Icon
+                    className={`h-5 w-5 ${isSelected ? "text-primary" : "text-slate-500"}`}
+                  />
                   <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-medium ${isSelected ? 'text-primary' : 'text-foreground'}`}>
+                    <p
+                      className={`text-sm font-medium ${isSelected ? "text-primary" : "text-foreground"}`}
+                    >
                       {type.label}
                     </p>
                   </div>
