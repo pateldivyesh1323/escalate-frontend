@@ -71,7 +71,7 @@ export default function Sidebar() {
             <div className="flex items-center gap-3">
               {user?.photoURL ? (
                 <Avatar className="h-12 w-12">
-                  <AvatarImage src={user.photoURL} />
+                  <AvatarImage src={user.photoURL}/>
                   <AvatarFallback>{user.name?.[0]}</AvatarFallback>
                 </Avatar>
               ) : (

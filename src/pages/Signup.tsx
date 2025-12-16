@@ -33,7 +33,6 @@ export default function Signup() {
 
     try {
       await signup(email, password);
-      localStorage.setItem('needsRoleSelection', 'true');
       toast.success('Account created successfully!');
     } catch (error: any) {
       if (error?.code === 'auth/email-already-in-use') {
@@ -59,7 +58,6 @@ export default function Signup() {
     setGoogleLoading(true);
     try {
       await signInWithGoogle();
-      localStorage.setItem('needsRoleSelection', 'true');
       toast.success('Signed up with Google successfully!');
     } catch (error: any) {
       const errorMessage = error?.message || 'Google sign-up failed';
@@ -86,7 +84,7 @@ export default function Signup() {
             <div className="p-2.5 rounded-xl bg-primary">
               <Brain className="h-8 w-8 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold text-white">Escalated</span>
+            <span className="text-2xl font-bold text-white">EscalateConvo</span>
           </div>
           
           <h1 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
@@ -123,7 +121,7 @@ export default function Signup() {
             <div className="p-2 rounded-lg bg-primary">
               <Brain className="h-6 w-6 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-foreground">Escalated</span>
+            <span className="text-xl font-bold text-foreground">EscalateConvo</span>
           </div>
 
           <div className="bg-background lg:bg-card rounded-2xl lg:shadow-xl lg:border lg:border-border p-0 lg:p-10 space-y-6">

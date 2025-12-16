@@ -14,7 +14,7 @@ export default function Introduction() {
               <div className="p-2 rounded-lg bg-primary">
                 <Brain className="h-6 w-6 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold text-foreground">Escalated</span>
+              <span className="text-xl font-bold text-foreground">EscalateConvo</span>
             </div>
             <div className="flex items-center gap-3">
               <Link to="/login">
@@ -226,7 +226,7 @@ export default function Introduction() {
             <div className="text-center mb-14">
               <span className="text-sm font-medium text-amber-400 uppercase tracking-wider">Why Choose Us</span>
               <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3">
-                Why Escalated Stands Out
+                Why EscalateConvo Stands Out
               </h2>
             </div>
             
@@ -310,10 +310,10 @@ export default function Introduction() {
               <div className="p-1.5 rounded-md bg-primary">
                 <Brain className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="text-lg font-semibold text-foreground">Escalated</span>
+              <span className="text-lg font-semibold text-foreground">EscalateConvo</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © 2026 Escalated. All rights reserved.
+              © 2026 EscalateConvo. All rights reserved.
             </p>
           </div>
         </div>
