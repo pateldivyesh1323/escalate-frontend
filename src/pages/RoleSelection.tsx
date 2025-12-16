@@ -11,7 +11,7 @@ import type { Role, Step } from '@/components/role-selection';
 
 export default function RoleSelection() {
   const navigate = useNavigate();
-  const { user, clearRoleSelectionFlag } = useAuth();
+  const { user, needsRoleSelection, clearRoleSelectionFlag } = useAuth();
   
   // State
   const [step, setStep] = useState<Step>('role');
@@ -22,6 +22,14 @@ export default function RoleSelection() {
   const [displayName, setDisplayName] = useState('');
   const [orgName, setOrgName] = useState('');
   const [orgType, setOrgType] = useState('');
+  const [orgDescription, setOrgDescription] = useState('');
+
+  // Redirect to home if user doesn't need role selection (prevents back navigation)
+  useEffect(() => {
+    if (!needsRoleSelection && user) {
+      navigate('/home', { replace: true });
+    }
+  }, [needsRoleSelection, user, navigate]);
 
   // Pre-fill name from user data
   useEffect(() => {
@@ -75,6 +83,7 @@ export default function RoleSelection() {
         await apiClient.post('/api/auth/upgrade-to-org', {
           orgName: orgName.trim(),
           orgType: orgType,
+          orgDescription: orgDescription.trim() || undefined,
         });
       } else {
         // Update user profile (name)
@@ -89,8 +98,9 @@ export default function RoleSelection() {
       
       toast.success('Account setup complete!');
       
+      // Navigate with replace to prevent back navigation
       setTimeout(() => {
-        navigate('/home');
+        navigate('/home', { replace: true });
       }, 500);
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || 'Failed to complete setup';
@@ -100,6 +110,11 @@ export default function RoleSelection() {
       setLoading(false);
     }
   };
+
+  // Don't render if user doesn't need role selection
+  if (!needsRoleSelection && user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4 sm:p-6 lg:p-8">
@@ -139,6 +154,8 @@ export default function RoleSelection() {
               setOrgName={setOrgName}
               orgType={orgType}
               setOrgType={setOrgType}
+              orgDescription={orgDescription}
+              setOrgDescription={setOrgDescription}
               onBack={handleBack}
               onSubmit={handleSubmit}
               loading={loading}

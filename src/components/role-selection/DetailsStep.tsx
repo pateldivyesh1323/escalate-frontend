@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Loader2, ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { ORGANIZATION_TYPES } from './types';
 
@@ -16,6 +17,8 @@ interface DetailsStepProps {
   setOrgName: (name: string) => void;
   orgType: string;
   setOrgType: (type: string) => void;
+  orgDescription: string;
+  setOrgDescription: (description: string) => void;
   onBack: () => void;
   onSubmit: () => void;
   loading: boolean;
@@ -30,6 +33,8 @@ export function DetailsStep({
   setOrgName,
   orgType,
   setOrgType,
+  orgDescription,
+  setOrgDescription,
   onBack,
   onSubmit,
   loading,
@@ -67,6 +72,8 @@ export function DetailsStep({
             setOrgName={setOrgName}
             orgType={orgType}
             setOrgType={setOrgType}
+            orgDescription={orgDescription}
+            setOrgDescription={setOrgDescription}
             loading={loading}
           />
         )}
@@ -156,6 +163,8 @@ interface OrganizationDetailsFormProps {
   setOrgName: (name: string) => void;
   orgType: string;
   setOrgType: (type: string) => void;
+  orgDescription: string;
+  setOrgDescription: (description: string) => void;
   loading: boolean;
 }
 
@@ -164,6 +173,8 @@ function OrganizationDetailsForm({
   setOrgName, 
   orgType, 
   setOrgType, 
+  orgDescription,
+  setOrgDescription,
   loading 
 }: OrganizationDetailsFormProps) {
   return (
@@ -225,7 +236,25 @@ function OrganizationDetailsForm({
           })}
         </div>
       </div>
+
+      {/* Organization Description */}
+      <div className="space-y-2">
+        <Label htmlFor="orgDescription" className="text-foreground font-medium">
+          Organization Description
+        </Label>
+        <Textarea
+          id="orgDescription"
+          value={orgDescription}
+          onChange={(e) => setOrgDescription(e.target.value)}
+          placeholder="Briefly describe what your organization does, its mission, or the type of candidates you're looking to assess..."
+          disabled={loading}
+          className="min-h-[120px] resize-none"
+          maxLength={500}
+        />
+        <p className="text-xs text-muted-foreground text-right">
+          {orgDescription.length}/500 characters
+        </p>
+      </div>
     </div>
   );
 }
-
