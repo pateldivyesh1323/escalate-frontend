@@ -77,14 +77,16 @@ export default function RoleSelection() {
     try {
       if (selectedRole === "ORGANIZATION") {
         // Upgrade to organization
-        await apiClient.post("/api/auth/upgrade-to-org", {
-          orgName: orgName.trim(),
+        await apiClient.post("/api/auth/change-role", {
+          role: "ORGANIZATION",
+          name: orgName.trim(),
           orgType: orgType,
           orgDescription: orgDescription.trim() || undefined,
         });
       } else {
         // Update user profile (name)
-        await apiClient.post("/api/auth/upgrade-to-org", {
+        await apiClient.post("/api/auth/change-role", {
+          role: "USER",
           name: displayName.trim(),
         });
       }
