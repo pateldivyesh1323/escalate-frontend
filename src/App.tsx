@@ -3,8 +3,9 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Introduction from './pages/Introduction';
-import OrganizationSendTest from './pages/OrganizationSendTest';
-import OrganizationViewTests from './pages/OrganizationViewTests';
+import CreateModule from './pages/CreateModule';
+import ViewModules from './pages/ViewModules';
+import ModuleDetail from './pages/ModuleDetail';
 import PrivateRouteWrapper from './wrappers/PrivateRouteWrapper';
 import PublicRouteWrapper from './wrappers/PublicRouteWrapper';
 import RoleSelectionRouteWrapper from './wrappers/RoleSelectionRouteWrapper';
@@ -51,18 +52,26 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/assign-test',
+    path: '/modules',
     element: (
       <PrivateRouteWrapper>
-        <OrganizationSendTest />
+        <ViewModules />
       </PrivateRouteWrapper>
     ),
   },
   {
-    path: '/manage-tests',
+    path: '/modules/create',
     element: (
       <PrivateRouteWrapper>
-        <OrganizationViewTests />
+        <CreateModule />
+      </PrivateRouteWrapper>
+    ),
+  },
+  {
+    path: '/modules/:moduleId',
+    element: (
+      <PrivateRouteWrapper>
+        <ModuleDetail />
       </PrivateRouteWrapper>
     ),
   },

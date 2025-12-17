@@ -68,24 +68,24 @@ const OrganizationHome = ({ user }: { user: User | null }) => {
           <ul className="space-y-4">
             <li>
               <a
-                href="/assign-test"
+                href="/modules/create"
                 className="flex items-center gap-3 text-primary hover:text-primary/80 transition-colors group"
               >
                 <span className="transform group-hover:translate-x-1 transition-transform">
                   →
                 </span>
-                <span className="font-medium">Assign a new test</span>
+                <span className="font-medium">Create a new module</span>
               </a>
             </li>
             <li>
               <a
-                href="/manage-tests"
+                href="/modules"
                 className="flex items-center gap-3 text-primary hover:text-primary/80 transition-colors group"
               >
                 <span className="transform group-hover:translate-x-1 transition-transform">
                   →
                 </span>
-                <span className="font-medium">View assigned tests</span>
+                <span className="font-medium">View all modules</span>
               </a>
             </li>
           </ul>
@@ -98,16 +98,16 @@ const OrganizationHome = ({ user }: { user: User | null }) => {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">
-                Total Tests Assigned
+                Total Modules
               </span>
               <span className="text-2xl font-bold text-primary">0</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Completed</span>
+              <span className="text-muted-foreground">Completed Attempts</span>
               <span className="text-2xl font-bold text-green-600">0</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Pending</span>
+              <span className="text-muted-foreground">Active Modules</span>
               <span className="text-2xl font-bold text-amber-600">0</span>
             </div>
           </div>
