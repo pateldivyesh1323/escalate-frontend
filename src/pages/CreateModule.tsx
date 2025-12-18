@@ -4,17 +4,16 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { createModule } from "@/lib/apiService";
+import { createModule } from "@/queries/moduleQueries";
 import { useAuth } from "@/context/AuthContext";
-import { 
-  ArrowLeft, 
-  Sparkles, 
-  User, 
-  MessageSquare, 
+import {
+  ArrowLeft,
+  Sparkles,
+  User,
   Settings2,
   Users,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
 } from "lucide-react";
 import DashboardLayout from "@/layouts/DashboardLayout";
 
@@ -38,10 +37,26 @@ interface ModuleFormData {
   userEmails: string[];
 }
 
-const DIFFICULTY_OPTIONS: { value: Difficulty; label: string; color: string }[] = [
-  { value: "EASY", label: "Easy", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-  { value: "MEDIUM", label: "Medium", color: "bg-amber-100 text-amber-700 border-amber-200" },
-  { value: "HARD", label: "Hard", color: "bg-rose-100 text-rose-700 border-rose-200" },
+const DIFFICULTY_OPTIONS: {
+  value: Difficulty;
+  label: string;
+  color: string;
+}[] = [
+  {
+    value: "EASY",
+    label: "Easy",
+    color: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  },
+  {
+    value: "MEDIUM",
+    label: "Medium",
+    color: "bg-amber-100 text-amber-700 border-amber-200",
+  },
+  {
+    value: "HARD",
+    label: "Hard",
+    color: "bg-rose-100 text-rose-700 border-rose-200",
+  },
 ];
 
 const EMOTION_OPTIONS: { value: Emotion; label: string; emoji: string }[] = [
@@ -85,8 +100,12 @@ export default function CreateModule() {
             <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto">
               <Settings2 className="w-8 h-8 text-slate-400" />
             </div>
-            <h2 className="text-xl font-semibold text-slate-900">Not Authorized</h2>
-            <p className="text-slate-500">This page is only for organization accounts.</p>
+            <h2 className="text-xl font-semibold text-slate-900">
+              Not Authorized
+            </h2>
+            <p className="text-slate-500">
+              This page is only for organization accounts.
+            </p>
           </div>
         </div>
       </DashboardLayout>
@@ -98,13 +117,13 @@ export default function CreateModule() {
       const keys = path.split(".");
       const newData = { ...prev };
       let current: any = newData;
-      
+
       for (let i = 0; i < keys.length - 1; i++) {
         current[keys[i]] = { ...current[keys[i]] };
         current = current[keys[i]];
       }
       current[keys[keys.length - 1]] = value;
-      
+
       return newData;
     });
   };
@@ -112,17 +131,17 @@ export default function CreateModule() {
   const addEmail = () => {
     const email = emailInput.trim();
     if (!email) return;
-    
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       toast.error("Invalid email address");
       return;
     }
-    
+
     if (formData.userEmails.includes(email)) {
       toast.error("Email already added");
       return;
     }
-    
+
     setFormData((prev) => ({
       ...prev,
       userEmails: [...prev.userEmails, email],
@@ -175,8 +194,9 @@ export default function CreateModule() {
       await createModule(formData);
       toast.success("Module created successfully!");
       navigate("/modules");
-    } catch (err: any) {
-      const errorMessage = err?.response?.data?.message || "Failed to create module";
+    } catch (err) {
+      const errorMessage =
+        err?.response?.data?.message || "Failed to create module";
       toast.error(errorMessage);
       console.error("Error creating module:", err);
     } finally {
@@ -198,8 +218,12 @@ export default function CreateModule() {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Create New Module</h1>
-            <p className="text-slate-500">Set up a new training scenario for your team</p>
+            <h1 className="text-2xl font-bold text-slate-900">
+              Create New Module
+            </h1>
+            <p className="text-slate-500">
+              Set up a new training scenario for your team
+            </p>
           </div>
         </div>
 
@@ -245,9 +269,11 @@ export default function CreateModule() {
                     onClick={() => updateFormData("difficulty", opt.value)}
                     className={`
                       px-4 py-2 rounded-lg border font-medium text-sm transition-all
-                      ${formData.difficulty === opt.value 
-                        ? opt.color + " ring-2 ring-offset-2 ring-slate-900/10" 
-                        : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                      ${
+                        formData.difficulty === opt.value
+                          ? opt.color +
+                            " ring-2 ring-offset-2 ring-slate-900/10"
+                          : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
                       }
                     `}
                   >
@@ -271,11 +297,15 @@ export default function CreateModule() {
                 <Input
                   id="aiRole"
                   value={formData.aiFields.role}
-                  onChange={(e) => updateFormData("aiFields.role", e.target.value)}
+                  onChange={(e) =>
+                    updateFormData("aiFields.role", e.target.value)
+                  }
                   placeholder="e.g., Frustrated Customer"
                   className="h-11"
                 />
-                <p className="text-xs text-slate-500">The character the AI will play</p>
+                <p className="text-xs text-slate-500">
+                  The character the AI will play
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -285,12 +315,15 @@ export default function CreateModule() {
                     <button
                       key={opt.value}
                       type="button"
-                      onClick={() => updateFormData("aiFields.initialEmotion", opt.value)}
+                      onClick={() =>
+                        updateFormData("aiFields.initialEmotion", opt.value)
+                      }
                       className={`
                         px-3 py-1.5 rounded-lg border text-sm transition-all flex items-center gap-1.5
-                        ${formData.aiFields.initialEmotion === opt.value 
-                          ? "bg-indigo-50 text-indigo-700 border-indigo-200 ring-2 ring-offset-1 ring-indigo-500/20" 
-                          : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                        ${
+                          formData.aiFields.initialEmotion === opt.value
+                            ? "bg-indigo-50 text-indigo-700 border-indigo-200 ring-2 ring-offset-1 ring-indigo-500/20"
+                            : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
                         }
                       `}
                     >
@@ -307,7 +340,9 @@ export default function CreateModule() {
               <textarea
                 id="systemPrompt"
                 value={formData.aiFields.systemPrompt}
-                onChange={(e) => updateFormData("aiFields.systemPrompt", e.target.value)}
+                onChange={(e) =>
+                  updateFormData("aiFields.systemPrompt", e.target.value)
+                }
                 placeholder="Describe the AI's personality, behavior, and conversation style..."
                 rows={4}
                 className="w-full rounded-lg border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none"
@@ -319,7 +354,9 @@ export default function CreateModule() {
               <textarea
                 id="firstMessage"
                 value={formData.aiFields.firstMessage}
-                onChange={(e) => updateFormData("aiFields.firstMessage", e.target.value)}
+                onChange={(e) =>
+                  updateFormData("aiFields.firstMessage", e.target.value)
+                }
                 placeholder="The opening message the AI will send to start the conversation..."
                 rows={3}
                 className="w-full rounded-lg border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none"
@@ -339,11 +376,15 @@ export default function CreateModule() {
               <Input
                 id="userRole"
                 value={formData.userFields.role}
-                onChange={(e) => updateFormData("userFields.role", e.target.value)}
+                onChange={(e) =>
+                  updateFormData("userFields.role", e.target.value)
+                }
                 placeholder="e.g., Customer Support Agent"
                 className="h-11"
               />
-              <p className="text-xs text-slate-500">The role the test taker will play</p>
+              <p className="text-xs text-slate-500">
+                The role the test taker will play
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -351,7 +392,9 @@ export default function CreateModule() {
               <textarea
                 id="problemStatement"
                 value={formData.userFields.problemStatement}
-                onChange={(e) => updateFormData("userFields.problemStatement", e.target.value)}
+                onChange={(e) =>
+                  updateFormData("userFields.problemStatement", e.target.value)
+                }
                 placeholder="Describe the scenario and objectives for the test taker..."
                 rows={3}
                 className="w-full rounded-lg border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none"
@@ -372,9 +415,13 @@ export default function CreateModule() {
                 className="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1"
               >
                 {showAdvanced ? (
-                  <>Hide <ChevronUp className="w-4 h-4" /></>
+                  <>
+                    Hide <ChevronUp className="w-4 h-4" />
+                  </>
                 ) : (
-                  <>Show <ChevronDown className="w-4 h-4" /></>
+                  <>
+                    Show <ChevronDown className="w-4 h-4" />
+                  </>
                 )}
               </button>
             </div>
@@ -382,7 +429,8 @@ export default function CreateModule() {
             {showAdvanced && (
               <>
                 <p className="text-sm text-slate-500">
-                  Add email addresses of users who should have access to this module. You can also share via link later.
+                  Add email addresses of users who should have access to this
+                  module. You can also share via link later.
                 </p>
 
                 <div className="flex gap-2">
@@ -398,7 +446,12 @@ export default function CreateModule() {
                       }
                     }}
                   />
-                  <Button type="button" onClick={addEmail} variant="outline" className="h-11">
+                  <Button
+                    type="button"
+                    onClick={addEmail}
+                    variant="outline"
+                    className="h-11"
+                  >
                     Add
                   </Button>
                 </div>
@@ -456,4 +509,3 @@ export default function CreateModule() {
     </DashboardLayout>
   );
 }
-

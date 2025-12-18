@@ -1,15 +1,20 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAllModules, deleteModule, generateShareURL, revokeShareURL } from "@/lib/apiService";
+import {
+  getAllModules,
+  deleteModule,
+  generateShareURL,
+  revokeShareURL,
+} from "@/queries/moduleQueries";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import LoadingSpinner from "../assets/animation/LoadingSpinner";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import { 
-  Plus, 
-  RefreshCw, 
-  Settings2, 
+import {
+  Plus,
+  RefreshCw,
+  Settings2,
   MoreVertical,
   Trash2,
   Link2,
@@ -20,7 +25,7 @@ import {
   XCircle,
   AlertTriangle,
   Clock,
-  Edit3
+  Edit3,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -35,16 +40,16 @@ interface Module {
 }
 
 // Delete Confirmation Modal Component
-function DeleteConfirmModal({ 
-  isOpen, 
-  onClose, 
-  onConfirm, 
+function DeleteConfirmModal({
+  isOpen,
+  onClose,
+  onConfirm,
   moduleName,
-  isDeleting 
-}: { 
-  isOpen: boolean; 
-  onClose: () => void; 
-  onConfirm: () => void; 
+  isDeleting,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
   moduleName: string;
   isDeleting: boolean;
 }) {
@@ -53,11 +58,11 @@ function DeleteConfirmModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6 animate-in fade-in zoom-in-95 duration-200">
         <div className="flex flex-col items-center text-center">
@@ -65,23 +70,20 @@ function DeleteConfirmModal({
           <div className="w-16 h-16 rounded-full bg-rose-100 flex items-center justify-center mb-4">
             <AlertTriangle className="w-8 h-8 text-rose-500" />
           </div>
-          
+
           {/* Title */}
           <h3 className="text-xl font-semibold text-slate-900 mb-2">
             Delete Module
           </h3>
-          
+
           {/* Message */}
-          <p className="text-slate-500 mb-2">
-            Are you sure you want to delete
-          </p>
-          <p className="font-medium text-slate-900 mb-4">
-            "{moduleName}"?
-          </p>
+          <p className="text-slate-500 mb-2">Are you sure you want to delete</p>
+          <p className="font-medium text-slate-900 mb-4">"{moduleName}"?</p>
           <p className="text-sm text-slate-500 mb-6">
-            This action cannot be undone. All associated attempts and reports will also be deleted.
+            This action cannot be undone. All associated attempts and reports
+            will also be deleted.
           </p>
-          
+
           {/* Actions */}
           <div className="flex gap-3 w-full">
             <Button
@@ -122,13 +124,23 @@ export default function ViewModules() {
   const queryClient = useQueryClient();
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; moduleId: string; moduleName: string }>({
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    moduleId: string;
+    moduleName: string;
+  }>({
     isOpen: false,
     moduleId: "",
     moduleName: "",
   });
 
-  const { data: modules, isLoading, error, refetch, isFetching } = useQuery<Module[]>({
+  const {
+    data: modules,
+    isLoading,
+    error,
+    refetch,
+    isFetching,
+  } = useQuery<Module[]>({
     queryKey: ["org-modules"],
     queryFn: getAllModules,
     enabled: !!user && user.type === "ORGANIZATION",
@@ -147,7 +159,8 @@ export default function ViewModules() {
   });
 
   const generateShareMutation = useMutation({
-    mutationFn: ({ moduleId }: { moduleId: string }) => generateShareURL(moduleId),
+    mutationFn: ({ moduleId }: { moduleId: string }) =>
+      generateShareURL(moduleId),
     onSuccess: (data) => {
       toast.success("Share link generated!");
       queryClient.invalidateQueries({ queryKey: ["org-modules"] });
@@ -159,18 +172,23 @@ export default function ViewModules() {
       }
     },
     onError: (err: any) => {
-      toast.error(err?.response?.data?.message || "Failed to generate share link");
+      toast.error(
+        err?.response?.data?.message || "Failed to generate share link",
+      );
     },
   });
 
   const revokeShareMutation = useMutation({
-    mutationFn: ({ moduleId }: { moduleId: string }) => revokeShareURL(moduleId),
+    mutationFn: ({ moduleId }: { moduleId: string }) =>
+      revokeShareURL(moduleId),
     onSuccess: () => {
       toast.success("Share link revoked");
       queryClient.invalidateQueries({ queryKey: ["org-modules"] });
     },
     onError: (err: any) => {
-      toast.error(err?.response?.data?.message || "Failed to revoke share link");
+      toast.error(
+        err?.response?.data?.message || "Failed to revoke share link",
+      );
     },
   });
 
@@ -207,8 +225,12 @@ export default function ViewModules() {
             <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto">
               <Settings2 className="w-8 h-8 text-slate-400" />
             </div>
-            <h2 className="text-xl font-semibold text-slate-900">Not Authorized</h2>
-            <p className="text-slate-500">This page is only for organization accounts.</p>
+            <h2 className="text-xl font-semibold text-slate-900">
+              Not Authorized
+            </h2>
+            <p className="text-slate-500">
+              This page is only for organization accounts.
+            </p>
           </div>
         </div>
       </DashboardLayout>
@@ -235,8 +257,12 @@ export default function ViewModules() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Training Modules</h1>
-            <p className="text-slate-500">Manage your training scenarios and assessments</p>
+            <h1 className="text-2xl font-bold text-slate-900">
+              Training Modules
+            </h1>
+            <p className="text-slate-500">
+              Manage your training scenarios and assessments
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <Button
@@ -246,7 +272,9 @@ export default function ViewModules() {
               disabled={isFetching}
               className="h-10 w-10"
             >
-              <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`w-4 h-4 ${isFetching ? "animate-spin" : ""}`}
+              />
             </Button>
             <Button
               onClick={() => navigate("/modules/create")}
@@ -266,7 +294,9 @@ export default function ViewModules() {
                 <Settings2 className="w-10 h-10 text-indigo-400" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-slate-900">No modules yet</h3>
+                <h3 className="text-lg font-semibold text-slate-900">
+                  No modules yet
+                </h3>
                 <p className="text-slate-500 mt-1">
                   Create your first training module to get started
                 </p>
@@ -289,26 +319,39 @@ export default function ViewModules() {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className={`
+                    <div
+                      className={`
                       w-12 h-12 rounded-lg flex items-center justify-center
-                      ${module.active ? 'bg-indigo-100' : 'bg-slate-100'}
-                    `}>
-                      <Settings2 className={`w-6 h-6 ${module.active ? 'text-indigo-600' : 'text-slate-400'}`} />
+                      ${module.active ? "bg-indigo-100" : "bg-slate-100"}
+                    `}
+                    >
+                      <Settings2
+                        className={`w-6 h-6 ${module.active ? "text-indigo-600" : "text-slate-400"}`}
+                      />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-slate-900">{module.title}</h3>
+                      <h3 className="font-semibold text-slate-900">
+                        {module.title}
+                      </h3>
                       <div className="flex items-center gap-2 mt-1 flex-wrap">
-                        <span className={`
+                        <span
+                          className={`
                           inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium
-                          ${module.active 
-                            ? 'bg-emerald-100 text-emerald-700' 
-                            : 'bg-slate-100 text-slate-600'
+                          ${
+                            module.active
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-slate-100 text-slate-600"
                           }
-                        `}>
+                        `}
+                        >
                           {module.active ? (
-                            <><CheckCircle2 className="w-3 h-3" /> Active</>
+                            <>
+                              <CheckCircle2 className="w-3 h-3" /> Active
+                            </>
                           ) : (
-                            <><XCircle className="w-3 h-3" /> Inactive</>
+                            <>
+                              <XCircle className="w-3 h-3" /> Inactive
+                            </>
                           )}
                         </span>
                         {module.topic && (
@@ -321,11 +364,12 @@ export default function ViewModules() {
                             <Link2 className="w-3 h-3" /> Shared
                           </span>
                         )}
-                        {module.shareURL && isShareExpired(module.shareTokenExpiry) && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
-                            <Clock className="w-3 h-3" /> Link Expired
-                          </span>
-                        )}
+                        {module.shareURL &&
+                          isShareExpired(module.shareTokenExpiry) && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                              <Clock className="w-3 h-3" /> Link Expired
+                            </span>
+                          )}
                       </div>
                     </div>
                   </div>
@@ -336,28 +380,37 @@ export default function ViewModules() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleCopyLink(module.shareURL!, module._id)}
+                        onClick={() =>
+                          handleCopyLink(module.shareURL!, module._id)
+                        }
                         className="h-9"
                       >
                         {copiedId === module._id ? (
-                          <><CheckCircle2 className="w-4 h-4 mr-1.5 text-emerald-500" /> Copied!</>
+                          <>
+                            <CheckCircle2 className="w-4 h-4 mr-1.5 text-emerald-500" />{" "}
+                            Copied!
+                          </>
                         ) : (
-                          <><Copy className="w-4 h-4 mr-1.5" /> Copy Link</>
+                          <>
+                            <Copy className="w-4 h-4 mr-1.5" /> Copy Link
+                          </>
                         )}
                       </Button>
                     ) : (
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => generateShareMutation.mutate({ moduleId: module._id })}
+                        onClick={() =>
+                          generateShareMutation.mutate({ moduleId: module._id })
+                        }
                         disabled={generateShareMutation.isPending}
                         className="h-9"
                       >
                         <Link2 className="w-4 h-4 mr-1.5" />
-                        {module.shareURL && isShareExpired(module.shareTokenExpiry) 
-                          ? "Regenerate Link" 
-                          : "Generate Link"
-                        }
+                        {module.shareURL &&
+                        isShareExpired(module.shareTokenExpiry)
+                          ? "Regenerate Link"
+                          : "Generate Link"}
                       </Button>
                     )}
 
@@ -377,7 +430,11 @@ export default function ViewModules() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => setOpenMenuId(openMenuId === module._id ? null : module._id)}
+                        onClick={() =>
+                          setOpenMenuId(
+                            openMenuId === module._id ? null : module._id,
+                          )
+                        }
                         className="h-9 w-9"
                       >
                         <MoreVertical className="w-4 h-4" />
@@ -385,9 +442,9 @@ export default function ViewModules() {
 
                       {openMenuId === module._id && (
                         <>
-                          <div 
-                            className="fixed inset-0 z-10" 
-                            onClick={() => setOpenMenuId(null)} 
+                          <div
+                            className="fixed inset-0 z-10"
+                            onClick={() => setOpenMenuId(null)}
                           />
                           <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-20">
                             <button
@@ -403,7 +460,9 @@ export default function ViewModules() {
                             {hasValidShareLink(module) && (
                               <button
                                 onClick={() => {
-                                  revokeShareMutation.mutate({ moduleId: module._id });
+                                  revokeShareMutation.mutate({
+                                    moduleId: module._id,
+                                  });
                                   setOpenMenuId(null);
                                 }}
                                 className="w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
@@ -413,7 +472,9 @@ export default function ViewModules() {
                               </button>
                             )}
                             <button
-                              onClick={() => openDeleteModal(module._id, module.title)}
+                              onClick={() =>
+                                openDeleteModal(module._id, module.title)
+                              }
                               className="w-full px-4 py-2 text-left text-sm text-rose-600 hover:bg-rose-50 flex items-center gap-2"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -425,7 +486,6 @@ export default function ViewModules() {
                     </div>
                   </div>
                 </div>
-
               </div>
             ))}
           </div>
@@ -435,7 +495,9 @@ export default function ViewModules() {
       {/* Delete Confirmation Modal */}
       <DeleteConfirmModal
         isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, moduleId: "", moduleName: "" })}
+        onClose={() =>
+          setDeleteModal({ isOpen: false, moduleId: "", moduleName: "" })
+        }
         onConfirm={confirmDelete}
         moduleName={deleteModal.moduleName}
         isDeleting={deleteMutation.isPending}

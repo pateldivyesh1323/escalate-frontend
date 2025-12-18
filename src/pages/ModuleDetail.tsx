@@ -1,7 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getModule, updateModule, generateShareURL, revokeShareURL } from "@/lib/apiService";
+import {
+  getModule,
+  updateModule,
+  generateShareURL,
+  revokeShareURL,
+} from "@/queries/moduleQueries";
+import type { Module, Difficulty, Emotion } from "@/queries/moduleQueries";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -27,34 +33,26 @@ import {
   EyeOff,
 } from "lucide-react";
 
-type Difficulty = "EASY" | "MEDIUM" | "HARD";
-type Emotion = "neutral" | "happy" | "angry" | "confused" | "sad";
-
-interface ModuleData {
-  _id: string;
-  title: string;
-  topic: string;
-  difficulty: Difficulty;
-  active: boolean;
-  aiFields: {
-    role: string;
-    systemPrompt: string;
-    firstMessage: string;
-    initialEmotion: Emotion;
-  };
-  userFields: {
-    role: string;
-    problemStatement: string;
-  };
-  userEmails: string[];
-  shareURL?: string;
-  shareTokenExpiry?: string;
-}
-
-const DIFFICULTY_OPTIONS: { value: Difficulty; label: string; color: string }[] = [
-  { value: "EASY", label: "Easy", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-  { value: "MEDIUM", label: "Medium", color: "bg-amber-100 text-amber-700 border-amber-200" },
-  { value: "HARD", label: "Hard", color: "bg-rose-100 text-rose-700 border-rose-200" },
+const DIFFICULTY_OPTIONS: {
+  value: Difficulty;
+  label: string;
+  color: string;
+}[] = [
+  {
+    value: "EASY",
+    label: "Easy",
+    color: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  },
+  {
+    value: "MEDIUM",
+    label: "Medium",
+    color: "bg-amber-100 text-amber-700 border-amber-200",
+  },
+  {
+    value: "HARD",
+    label: "Hard",
+    color: "bg-rose-100 text-rose-700 border-rose-200",
+  },
 ];
 
 const EMOTION_OPTIONS: { value: Emotion; label: string; emoji: string }[] = [
@@ -72,33 +70,38 @@ export default function ModuleDetail() {
   const { user } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<ModuleData | null>(null);
+  const [formData, setFormData] = useState<Module | null>(null);
   const [emailInput, setEmailInput] = useState("");
   const [copiedLink, setCopiedLink] = useState(false);
   const [isLinkVisible, setIsLinkVisible] = useState(false);
 
-  const { data: module, isLoading, error } = useQuery<ModuleData>({
+  const {
+    data: module,
+    isLoading,
+    error,
+  } = useQuery<Module>({
     queryKey: ["module", moduleId],
-    queryFn: () => getModule(moduleId!),
+    queryFn: () => getModule(moduleId as string),
     enabled: !!moduleId && !!user && user.type === "ORGANIZATION",
   });
 
-  useEffect(() => {
+  const startEditing = () => {
     if (module) {
       setFormData(module);
+      setIsEditing(true);
     }
-  }, [module]);
+  };
 
   const updateMutation = useMutation({
-    mutationFn: (data: Partial<ModuleData>) => updateModule(moduleId!, data),
+    mutationFn: (data: Partial<Module>) => updateModule(moduleId!, data),
     onSuccess: () => {
       toast.success("Module updated successfully");
       queryClient.invalidateQueries({ queryKey: ["module", moduleId] });
       queryClient.invalidateQueries({ queryKey: ["org-modules"] });
       setIsEditing(false);
     },
-    onError: (err: any) => {
-      toast.error(err?.response?.data?.message || "Failed to update module");
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to update module");
     },
   });
 
@@ -113,8 +116,10 @@ export default function ModuleDetail() {
         toast.success("Link copied to clipboard!");
       }
     },
-    onError: (err: any) => {
-      toast.error(err?.response?.data?.message || "Failed to generate share link");
+    onError: (err) => {
+      toast.error(
+        err?.response?.data?.message || "Failed to generate share link",
+      );
     },
   });
 
@@ -125,8 +130,10 @@ export default function ModuleDetail() {
       queryClient.invalidateQueries({ queryKey: ["module", moduleId] });
       queryClient.invalidateQueries({ queryKey: ["org-modules"] });
     },
-    onError: (err: any) => {
-      toast.error(err?.response?.data?.message || "Failed to revoke share link");
+    onError: (err) => {
+      toast.error(
+        err?.response?.data?.message || "Failed to revoke share link",
+      );
     },
   });
 
@@ -137,13 +144,13 @@ export default function ModuleDetail() {
       const keys = path.split(".");
       const newData = { ...prev };
       let current: any = newData;
-      
+
       for (let i = 0; i < keys.length - 1; i++) {
         current[keys[i]] = { ...current[keys[i]] };
         current = current[keys[i]];
       }
       current[keys[keys.length - 1]] = value;
-      
+
       return newData;
     });
   };
@@ -151,29 +158,37 @@ export default function ModuleDetail() {
   const addEmail = () => {
     const email = emailInput.trim();
     if (!email || !formData) return;
-    
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       toast.error("Invalid email address");
       return;
     }
-    
+
     if (formData.userEmails.includes(email)) {
       toast.error("Email already added");
       return;
     }
-    
-    setFormData((prev) => prev ? ({
-      ...prev,
-      userEmails: [...prev.userEmails, email],
-    }) : prev);
+
+    setFormData((prev) =>
+      prev
+        ? {
+            ...prev,
+            userEmails: [...prev.userEmails, email],
+          }
+        : prev,
+    );
     setEmailInput("");
   };
 
   const removeEmail = (email: string) => {
-    setFormData((prev) => prev ? ({
-      ...prev,
-      userEmails: prev.userEmails.filter((e) => e !== email),
-    }) : prev);
+    setFormData((prev) =>
+      prev
+        ? {
+            ...prev,
+            userEmails: prev.userEmails.filter((e) => e !== email),
+          }
+        : prev,
+    );
   };
 
   const handleSave = () => {
@@ -242,8 +257,12 @@ export default function ModuleDetail() {
             <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto">
               <Settings2 className="w-8 h-8 text-slate-400" />
             </div>
-            <h2 className="text-xl font-semibold text-slate-900">Not Authorized</h2>
-            <p className="text-slate-500">This page is only for organization accounts.</p>
+            <h2 className="text-xl font-semibold text-slate-900">
+              Not Authorized
+            </h2>
+            <p className="text-slate-500">
+              This page is only for organization accounts.
+            </p>
           </div>
         </div>
       </DashboardLayout>
@@ -260,7 +279,7 @@ export default function ModuleDetail() {
     );
   }
 
-  if (error || !module || !formData) {
+  if (error || !module) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
@@ -268,9 +287,18 @@ export default function ModuleDetail() {
             <div className="w-16 h-16 rounded-full bg-rose-100 flex items-center justify-center mx-auto">
               <AlertTriangle className="w-8 h-8 text-rose-500" />
             </div>
-            <h2 className="text-xl font-semibold text-slate-900">Module Not Found</h2>
-            <p className="text-slate-500">The module you're looking for doesn't exist or you don't have access.</p>
-            <Button onClick={() => navigate("/modules")} variant="outline" className="mt-4">
+            <h2 className="text-xl font-semibold text-slate-900">
+              Module Not Found
+            </h2>
+            <p className="text-slate-500">
+              The module you're looking for doesn't exist or you don't have
+              access.
+            </p>
+            <Button
+              onClick={() => navigate("/modules")}
+              variant="outline"
+              className="mt-4"
+            >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Modules
             </Button>
@@ -299,25 +327,30 @@ export default function ModuleDetail() {
                 {isEditing ? "Edit Module" : module.title}
               </h1>
               <div className="flex items-center gap-2 mt-1">
-                <span className={`
+                <span
+                  className={`
                   inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium
-                  ${module.active 
-                    ? 'bg-emerald-100 text-emerald-700' 
-                    : 'bg-slate-100 text-slate-600'
+                  ${
+                    module.active
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-slate-100 text-slate-600"
                   }
-                `}>
+                `}
+                >
                   {module.active ? "Active" : "Inactive"}
                 </span>
-                <span className={`
+                <span
+                  className={`
                   px-2 py-0.5 rounded-full text-xs font-medium
-                  ${DIFFICULTY_OPTIONS.find(d => d.value === module.difficulty)?.color || 'bg-slate-100'}
-                `}>
+                  ${DIFFICULTY_OPTIONS.find((d) => d.value === module.difficulty)?.color || "bg-slate-100"}
+                `}
+                >
                   {module.difficulty}
                 </span>
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             {isEditing ? (
               <>
@@ -343,7 +376,7 @@ export default function ModuleDetail() {
               </>
             ) : (
               <Button
-                onClick={() => setIsEditing(true)}
+                onClick={startEditing}
                 className="h-10 bg-indigo-600 hover:bg-indigo-700"
               >
                 <Edit3 className="w-4 h-4 mr-2" />
@@ -369,9 +402,14 @@ export default function ModuleDetail() {
                   className="h-9"
                 >
                   {copiedLink ? (
-                    <><CheckCircle2 className="w-4 h-4 mr-1.5 text-emerald-500" /> Copied!</>
+                    <>
+                      <CheckCircle2 className="w-4 h-4 mr-1.5 text-emerald-500" />{" "}
+                      Copied!
+                    </>
                   ) : (
-                    <><Copy className="w-4 h-4 mr-1.5" /> Copy Link</>
+                    <>
+                      <Copy className="w-4 h-4 mr-1.5" /> Copy Link
+                    </>
                   )}
                 </Button>
                 <Button
@@ -393,20 +431,21 @@ export default function ModuleDetail() {
                 className="h-9"
               >
                 <Link2 className="w-4 h-4 mr-1.5" />
-                {generateShareMutation.isPending ? "Generating..." : "Generate Link"}
+                {generateShareMutation.isPending
+                  ? "Generating..."
+                  : "Generate Link"}
               </Button>
             )}
           </div>
-          
+
           {module.shareURL && (
             <div className="mt-4 p-3 bg-slate-50 rounded-lg">
               <div className="flex items-center gap-2">
                 <Link2 className="w-4 h-4 text-slate-400 shrink-0" />
                 <code className="flex-1 text-sm text-slate-600 font-mono truncate">
-                  {isLinkVisible 
-                    ? module.shareURL 
-                    : "••••••••••••••••••••••••••••••••••••••••••••"
-                  }
+                  {isLinkVisible
+                    ? module.shareURL
+                    : "••••••••••••••••••••••••••••••••••••••••••••"}
                 </code>
                 <button
                   onClick={() => setIsLinkVisible(!isLinkVisible)}
@@ -421,12 +460,20 @@ export default function ModuleDetail() {
                 </button>
               </div>
               {module.shareTokenExpiry && (
-                <div className={`flex items-center gap-1.5 mt-3 text-xs ${isShareExpired() ? 'text-rose-600' : 'text-slate-500'}`}>
+                <div
+                  className={`flex items-center gap-1.5 mt-3 text-xs ${isShareExpired() ? "text-rose-600" : "text-slate-500"}`}
+                >
                   <Clock className="w-3.5 h-3.5" />
                   {isShareExpired() ? (
-                    <span>Expired on {new Date(module.shareTokenExpiry).toLocaleDateString()}</span>
+                    <span>
+                      Expired on{" "}
+                      {new Date(module.shareTokenExpiry).toLocaleDateString()}
+                    </span>
                   ) : (
-                    <span>Expires on {new Date(module.shareTokenExpiry).toLocaleDateString()}</span>
+                    <span>
+                      Expires on{" "}
+                      {new Date(module.shareTokenExpiry).toLocaleDateString()}
+                    </span>
                   )}
                 </div>
               )}
@@ -444,7 +491,7 @@ export default function ModuleDetail() {
           <div className="grid md:grid-cols-2 gap-5">
             <div className="space-y-2">
               <Label htmlFor="title">Module Title</Label>
-              {isEditing ? (
+              {isEditing && formData ? (
                 <Input
                   id="title"
                   value={formData.title}
@@ -458,7 +505,7 @@ export default function ModuleDetail() {
 
             <div className="space-y-2">
               <Label htmlFor="topic">Topic</Label>
-              {isEditing ? (
+              {isEditing && formData ? (
                 <Input
                   id="topic"
                   value={formData.topic}
@@ -474,7 +521,7 @@ export default function ModuleDetail() {
           <div className="grid md:grid-cols-2 gap-5">
             <div className="space-y-2">
               <Label>Difficulty Level</Label>
-              {isEditing ? (
+              {isEditing && formData ? (
                 <div className="flex gap-2">
                   {DIFFICULTY_OPTIONS.map((opt) => (
                     <button
@@ -483,9 +530,11 @@ export default function ModuleDetail() {
                       onClick={() => updateFormData("difficulty", opt.value)}
                       className={`
                         px-3 py-1.5 rounded-lg border font-medium text-sm transition-all
-                        ${formData.difficulty === opt.value 
-                          ? opt.color + " ring-2 ring-offset-1 ring-slate-900/10" 
-                          : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                        ${
+                          formData.difficulty === opt.value
+                            ? opt.color +
+                              " ring-2 ring-offset-1 ring-slate-900/10"
+                            : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
                         }
                       `}
                     >
@@ -494,10 +543,12 @@ export default function ModuleDetail() {
                   ))}
                 </div>
               ) : (
-                <span className={`
+                <span
+                  className={`
                   inline-flex px-3 py-1.5 rounded-lg text-sm font-medium
-                  ${DIFFICULTY_OPTIONS.find(d => d.value === module.difficulty)?.color || 'bg-slate-100'}
-                `}>
+                  ${DIFFICULTY_OPTIONS.find((d) => d.value === module.difficulty)?.color || "bg-slate-100"}
+                `}
+                >
                   {module.difficulty}
                 </span>
               )}
@@ -505,16 +556,17 @@ export default function ModuleDetail() {
 
             <div className="space-y-2">
               <Label>Status</Label>
-              {isEditing ? (
+              {isEditing && formData ? (
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => updateFormData("active", true)}
                     className={`
                       px-3 py-1.5 rounded-lg border font-medium text-sm transition-all
-                      ${formData.active 
-                        ? "bg-emerald-100 text-emerald-700 border-emerald-200 ring-2 ring-offset-1 ring-emerald-500/20" 
-                        : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                      ${
+                        formData.active
+                          ? "bg-emerald-100 text-emerald-700 border-emerald-200 ring-2 ring-offset-1 ring-emerald-500/20"
+                          : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
                       }
                     `}
                   >
@@ -525,9 +577,10 @@ export default function ModuleDetail() {
                     onClick={() => updateFormData("active", false)}
                     className={`
                       px-3 py-1.5 rounded-lg border font-medium text-sm transition-all
-                      ${!formData.active 
-                        ? "bg-slate-200 text-slate-700 border-slate-300 ring-2 ring-offset-1 ring-slate-500/20" 
-                        : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                      ${
+                        !formData.active
+                          ? "bg-slate-200 text-slate-700 border-slate-300 ring-2 ring-offset-1 ring-slate-500/20"
+                          : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
                       }
                     `}
                   >
@@ -535,10 +588,12 @@ export default function ModuleDetail() {
                   </button>
                 </div>
               ) : (
-                <span className={`
+                <span
+                  className={`
                   inline-flex px-3 py-1.5 rounded-lg text-sm font-medium
-                  ${module.active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}
-                `}>
+                  ${module.active ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"}
+                `}
+                >
                   {module.active ? "Active" : "Inactive"}
                 </span>
               )}
@@ -556,11 +611,13 @@ export default function ModuleDetail() {
           <div className="grid md:grid-cols-2 gap-5">
             <div className="space-y-2">
               <Label htmlFor="aiRole">AI Role</Label>
-              {isEditing ? (
+              {isEditing && formData ? (
                 <Input
                   id="aiRole"
                   value={formData.aiFields.role}
-                  onChange={(e) => updateFormData("aiFields.role", e.target.value)}
+                  onChange={(e) =>
+                    updateFormData("aiFields.role", e.target.value)
+                  }
                   className="h-11"
                 />
               ) : (
@@ -570,18 +627,21 @@ export default function ModuleDetail() {
 
             <div className="space-y-2">
               <Label>Initial Emotion</Label>
-              {isEditing ? (
+              {isEditing && formData ? (
                 <div className="flex flex-wrap gap-2">
                   {EMOTION_OPTIONS.map((opt) => (
                     <button
                       key={opt.value}
                       type="button"
-                      onClick={() => updateFormData("aiFields.initialEmotion", opt.value)}
+                      onClick={() =>
+                        updateFormData("aiFields.initialEmotion", opt.value)
+                      }
                       className={`
                         px-3 py-1.5 rounded-lg border text-sm transition-all flex items-center gap-1.5
-                        ${formData.aiFields.initialEmotion === opt.value 
-                          ? "bg-indigo-50 text-indigo-700 border-indigo-200 ring-2 ring-offset-1 ring-indigo-500/20" 
-                          : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                        ${
+                          formData.aiFields.initialEmotion === opt.value
+                            ? "bg-indigo-50 text-indigo-700 border-indigo-200 ring-2 ring-offset-1 ring-indigo-500/20"
+                            : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
                         }
                       `}
                     >
@@ -593,9 +653,13 @@ export default function ModuleDetail() {
               ) : (
                 <div className="flex items-center gap-2 py-2">
                   <span className="text-lg">
-                    {EMOTION_OPTIONS.find(e => e.value === module.aiFields.initialEmotion)?.emoji || "😐"}
+                    {EMOTION_OPTIONS.find(
+                      (e) => e.value === module.aiFields.initialEmotion,
+                    )?.emoji || "😐"}
                   </span>
-                  <span className="text-slate-700 capitalize">{module.aiFields.initialEmotion}</span>
+                  <span className="text-slate-700 capitalize">
+                    {module.aiFields.initialEmotion}
+                  </span>
                 </div>
               )}
             </div>
@@ -603,11 +667,13 @@ export default function ModuleDetail() {
 
           <div className="space-y-2">
             <Label htmlFor="systemPrompt">System Prompt</Label>
-            {isEditing ? (
+            {isEditing && formData ? (
               <textarea
                 id="systemPrompt"
                 value={formData.aiFields.systemPrompt}
-                onChange={(e) => updateFormData("aiFields.systemPrompt", e.target.value)}
+                onChange={(e) =>
+                  updateFormData("aiFields.systemPrompt", e.target.value)
+                }
                 rows={4}
                 className="w-full rounded-lg border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none"
               />
@@ -620,11 +686,13 @@ export default function ModuleDetail() {
 
           <div className="space-y-2">
             <Label htmlFor="firstMessage">First Message</Label>
-            {isEditing ? (
+            {isEditing && formData ? (
               <textarea
                 id="firstMessage"
                 value={formData.aiFields.firstMessage}
-                onChange={(e) => updateFormData("aiFields.firstMessage", e.target.value)}
+                onChange={(e) =>
+                  updateFormData("aiFields.firstMessage", e.target.value)
+                }
                 rows={3}
                 className="w-full rounded-lg border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none"
               />
@@ -645,11 +713,13 @@ export default function ModuleDetail() {
 
           <div className="space-y-2">
             <Label htmlFor="userRole">User Role</Label>
-            {isEditing ? (
+            {isEditing && formData ? (
               <Input
                 id="userRole"
                 value={formData.userFields.role}
-                onChange={(e) => updateFormData("userFields.role", e.target.value)}
+                onChange={(e) =>
+                  updateFormData("userFields.role", e.target.value)
+                }
                 className="h-11"
               />
             ) : (
@@ -659,11 +729,13 @@ export default function ModuleDetail() {
 
           <div className="space-y-2">
             <Label htmlFor="problemStatement">Problem Statement</Label>
-            {isEditing ? (
+            {isEditing && formData ? (
               <textarea
                 id="problemStatement"
                 value={formData.userFields.problemStatement}
-                onChange={(e) => updateFormData("userFields.problemStatement", e.target.value)}
+                onChange={(e) =>
+                  updateFormData("userFields.problemStatement", e.target.value)
+                }
                 rows={3}
                 className="w-full rounded-lg border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none"
               />
@@ -696,21 +768,30 @@ export default function ModuleDetail() {
                   }
                 }}
               />
-              <Button type="button" onClick={addEmail} variant="outline" className="h-11">
+              <Button
+                type="button"
+                onClick={addEmail}
+                variant="outline"
+                className="h-11"
+              >
                 Add
               </Button>
             </div>
           )}
 
-          {formData.userEmails && formData.userEmails.length > 0 ? (
+          {(isEditing && formData ? formData.userEmails : module.userEmails)
+            ?.length > 0 ? (
             <div className="flex flex-wrap gap-2">
-              {formData.userEmails.map((email) => (
+              {(isEditing && formData
+                ? formData.userEmails
+                : module.userEmails
+              ).map((email) => (
                 <div
                   key={email}
                   className="flex items-center gap-2 bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full text-sm"
                 >
                   <span>{email}</span>
-                  {isEditing && (
+                  {isEditing && formData && (
                     <button
                       type="button"
                       onClick={() => removeEmail(email)}
@@ -723,11 +804,12 @@ export default function ModuleDetail() {
               ))}
             </div>
           ) : (
-            <p className="text-slate-500 text-sm">No users invited yet. Share the link or add email addresses.</p>
+            <p className="text-slate-500 text-sm">
+              No users invited yet. Share the link or add email addresses.
+            </p>
           )}
         </section>
       </div>
     </DashboardLayout>
   );
 }
-
