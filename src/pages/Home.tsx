@@ -1,5 +1,5 @@
 import OrganizationHome from "@/components/organization/OrganizationHome";
-import TestTakerHome from "@/components/testtaker/TestTakerHome";
+import SharedModules from "./SharedModules";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Home() {
@@ -10,7 +10,7 @@ export default function Home() {
       {user?.type === "ORGANIZATION" ? (
         <OrganizationHome user={user} />
       ) : (
-        <TestTakerHome user={user} />
+        <SharedModules />
       )}
     </>
   );

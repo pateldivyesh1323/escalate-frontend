@@ -5,6 +5,8 @@ import Signup from './pages/Signup';
 import Introduction from './pages/Introduction';
 import CreateModule from './pages/CreateModule';
 import ViewModules from './pages/ViewModules';
+import Modules from './pages/Modules';
+import SharedModuleDetail from './pages/SharedModuleDetail';
 import ModuleDetail from './pages/ModuleDetail';
 import PrivateRouteWrapper from './wrappers/PrivateRouteWrapper';
 import PublicRouteWrapper from './wrappers/PublicRouteWrapper';
@@ -55,7 +57,7 @@ const router = createBrowserRouter([
     path: '/modules',
     element: (
       <PrivateRouteWrapper>
-        <ViewModules />
+        <Modules />
       </PrivateRouteWrapper>
     ),
   },
@@ -72,6 +74,14 @@ const router = createBrowserRouter([
     element: (
       <PrivateRouteWrapper>
         <ModuleDetail />
+      </PrivateRouteWrapper>
+    ),
+  },
+  {
+    path: '/shared/:moduleId',
+    element: (
+      <PrivateRouteWrapper>
+        <SharedModuleDetail />
       </PrivateRouteWrapper>
     ),
   },

@@ -135,3 +135,12 @@ export const getModuleByShareToken = async (
   );
   return res.data.data;
 };
+
+export const getSharedModuleById = async (
+  moduleId: string,
+): Promise<Module> => {
+  const res = await apiClient.get<{ data: Module }>(
+    `/api/modules/shared/${moduleId}`,
+  );
+  return res.data.data;
+};

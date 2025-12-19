@@ -22,8 +22,7 @@ export default function AppSidebar() {
   const { toggleSidebar } = useSidebar();
 
   const userMenuItems = [
-    { path: "/home", icon: LayoutDashboard, label: "Dashboard" },
-    { path: "/modules", icon: Boxes, label: "Modules" },
+    { path: "/home", icon: LayoutDashboard, label: "Home" },
   ];
 
   const orgMenuItems = [
