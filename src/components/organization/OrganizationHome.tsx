@@ -55,7 +55,7 @@ const OrganizationHome = ({ user }: { user: User | null }) => {
               </span>
               <br />
               <span className="bg-linear-to-r from-green-600 via-emerald-500 to-green-600 bg-clip-text text-transparent">
-                {user?.name?.split(" ")[0] || "Admin"}
+                {user?.name || "Admin"}
               </span>
             </h1>
             <p className="text-muted-foreground text-lg max-w-md">
