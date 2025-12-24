@@ -4,7 +4,7 @@ import { useConversation } from "@elevenlabs/react";
 import { Button } from "@/components/ui/button";
 import { Orb, type AgentState } from "@/components/ui/orb";
 import LoadingSpinner from "../../assets/animation/LoadingSpinner";
-import { Phone, PhoneOff, ArrowLeft } from "lucide-react";
+import { Phone, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Conversation() {
@@ -62,14 +62,6 @@ export default function Conversation() {
       toast.error(
         "Failed to start conversation. Please check your microphone permissions.",
       );
-    }
-  };
-
-  const handleEndConversation = async () => {
-    try {
-      await conversation.endSession();
-    } catch (error) {
-      console.error("Failed to end conversation:", error);
     }
   };
 
@@ -142,22 +134,13 @@ export default function Conversation() {
                     : "Listening..."
                 : "Connecting..."}
             </p>
-            <p className="text-slate-400 mb-8">
+            <p className="text-slate-400">
               {conversation.status === "connected"
                 ? agentState === "talking"
                   ? "Please wait while the AI responds"
                   : "Speak clearly into your microphone"
                 : "Please wait while we establish connection"}
             </p>
-
-            <Button
-              onClick={handleEndConversation}
-              variant="destructive"
-              className="bg-linear-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-semibold px-8 py-6 h-auto rounded-xl shadow-lg shadow-rose-500/25 transition-all duration-300"
-            >
-              <PhoneOff className="w-5 h-5 mr-2" />
-              End Conversation
-            </Button>
           </div>
         )}
       </div>

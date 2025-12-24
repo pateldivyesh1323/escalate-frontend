@@ -30,6 +30,7 @@ import {
   X,
   Eye,
   EyeOff,
+  Timer,
 } from "lucide-react";
 
 const DIFFICULTY_OPTIONS: {
@@ -227,6 +228,7 @@ export default function ModuleDetail() {
       title: formData.title,
       topic: formData.topic,
       difficulty: formData.difficulty,
+      maxDurationSeconds: formData.maxDurationSeconds,
       active: formData.active,
       aiFields: formData.aiFields,
       userFields: formData.userFields,
@@ -573,6 +575,50 @@ export default function ModuleDetail() {
             )}
           </div>
         </div>
+
+        <div className="space-y-2">
+          <Label className="flex items-center gap-2">
+            <Timer className="w-4 h-4 text-slate-500" />
+            Max Duration
+          </Label>
+          {isEditing && formData ? (
+            <div className="flex items-center gap-4">
+              <input
+                type="range"
+                min={60}
+                max={300}
+                step={30}
+                value={formData.maxDurationSeconds || 180}
+                onChange={(e) =>
+                  updateFormData("maxDurationSeconds", Number(e.target.value))
+                }
+                className="flex-1 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+              />
+              <div className="flex items-center gap-1 min-w-[80px] justify-end">
+                <span className="text-lg font-semibold text-slate-800">
+                  {Math.floor((formData.maxDurationSeconds || 180) / 60)}
+                </span>
+                <span className="text-sm text-slate-500">
+                  min{" "}
+                  {(formData.maxDurationSeconds || 180) % 60 > 0 &&
+                    `${(formData.maxDurationSeconds || 180) % 60}s`}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 py-2">
+              <span className="text-slate-700">
+                {Math.floor((module.maxDurationSeconds || 180) / 60)} min
+                {(module.maxDurationSeconds || 180) % 60 > 0 &&
+                  ` ${(module.maxDurationSeconds || 180) % 60}s`}
+              </span>
+            </div>
+          )}
+          <p className="text-xs text-slate-500">
+            Conversation will automatically end after this duration (1-5
+            minutes)
+          </p>
+        </div>
       </section>
 
       {/* AI Configuration */}
@@ -786,4 +832,3 @@ export default function ModuleDetail() {
     </div>
   );
 }
-

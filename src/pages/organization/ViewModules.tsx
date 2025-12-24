@@ -301,16 +301,6 @@ export default function ViewModules() {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div
-                      className={`
-                      w-12 h-12 rounded-lg flex items-center justify-center
-                      ${module.active ? "bg-indigo-100" : "bg-slate-100"}
-                    `}
-                    >
-                      <Settings2
-                        className={`w-6 h-6 ${module.active ? "text-indigo-600" : "text-slate-400"}`}
-                      />
-                    </div>
                     <div>
                       <h3 className="font-semibold text-slate-900">
                         {module.title}
@@ -474,7 +464,6 @@ export default function ViewModules() {
         )}
       </div>
 
-      {/* Delete Confirmation Modal */}
       <DeleteConfirmModal
         isOpen={deleteModal.isOpen}
         onClose={() =>

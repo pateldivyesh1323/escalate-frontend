@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { createModule } from "@/queries/moduleQueries";
-import { useAuth } from "@/context/AuthContext";
 import {
   ArrowLeft,
   Sparkles,
@@ -14,6 +13,7 @@ import {
   Users,
   ChevronDown,
   ChevronUp,
+  Timer,
 } from "lucide-react";
 
 type Difficulty = "EASY" | "MEDIUM" | "HARD";
@@ -23,6 +23,7 @@ interface ModuleFormData {
   title: string;
   topic: string;
   difficulty: Difficulty;
+  maxDurationSeconds: number;
   aiFields: {
     role: string;
     systemPrompt: string;
@@ -67,13 +68,13 @@ const EMOTION_OPTIONS: { value: Emotion; label: string; emoji: string }[] = [
 ];
 
 export default function CreateModule() {
-  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<ModuleFormData>({
     title: "",
     topic: "",
     difficulty: "MEDIUM",
+    maxDurationSeconds: 180,
     aiFields: {
       role: "",
       systemPrompt: "",
@@ -259,6 +260,41 @@ export default function CreateModule() {
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="maxDuration" className="flex items-center gap-2">
+              <Timer className="w-4 h-4 text-slate-500" />
+              Max Duration
+            </Label>
+            <div className="flex items-center gap-4">
+              <input
+                type="range"
+                id="maxDuration"
+                min={60}
+                max={300}
+                step={30}
+                value={formData.maxDurationSeconds}
+                onChange={(e) =>
+                  updateFormData("maxDurationSeconds", Number(e.target.value))
+                }
+                className="flex-1 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+              />
+              <div className="flex items-center gap-1 min-w-[80px] justify-end">
+                <span className="text-lg font-semibold text-slate-800">
+                  {Math.floor(formData.maxDurationSeconds / 60)}
+                </span>
+                <span className="text-sm text-slate-500">
+                  min{" "}
+                  {formData.maxDurationSeconds % 60 > 0 &&
+                    `${formData.maxDurationSeconds % 60}s`}
+                </span>
+              </div>
+            </div>
+            <p className="text-xs text-slate-500">
+              Conversation will automatically end after this duration (1-5
+              minutes)
+            </p>
           </div>
         </section>
 
@@ -486,4 +522,3 @@ export default function CreateModule() {
     </div>
   );
 }
-

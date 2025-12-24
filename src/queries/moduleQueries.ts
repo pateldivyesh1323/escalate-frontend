@@ -57,6 +57,7 @@ export interface Module {
   topic: string;
   difficulty: Difficulty;
   active: boolean;
+  maxDurationSeconds: number;
   shareURL?: string;
   shareTokenExpiry?: string;
   aiFields: ModuleAIFields;
@@ -70,6 +71,7 @@ export interface CreateModuleData {
   title: string;
   topic: string;
   difficulty: Difficulty;
+  maxDurationSeconds?: number;
   aiFields: ModuleAIFields;
   userFields: ModuleUserFields;
   userEmails?: string[];
