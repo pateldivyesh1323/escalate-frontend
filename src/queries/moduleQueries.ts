@@ -63,7 +63,7 @@ export interface Module {
   aiFields: ModuleAIFields;
   userFields: ModuleUserFields;
   userEmails: string[];
-  createdBy?: string;
+  createdBy?: string | { _id: string; name: string };
   createdAt?: string;
 }
 
@@ -178,5 +178,55 @@ export const startAttempt = async (moduleId: string): Promise<Attempt> => {
   const res = await apiClient.post<{ data: Attempt }>(`/api/attempts/start`, {
     moduleId,
   });
+  return res.data.data;
+};
+
+export interface AttemptUser {
+  _id: string;
+  name?: string;
+  email?: string;
+}
+
+export interface DetailedAttemptReport {
+  _id: string;
+  conversationId: string;
+  overallScore: number;
+  recommendation: "HIRE" | "NO_HIRE" | "MAYBE";
+  summary: string;
+  strengths: string[];
+  areasForImprovement: string[];
+  detailedFeedback: {
+    communication: { score: number; feedback: string };
+    problemSolving: { score: number; feedback: string };
+    professionalism: { score: number; feedback: string };
+    empathy: { score: number; feedback: string };
+    productKnowledge: { score: number; feedback: string };
+  };
+  transcriptAnalysis: {
+    totalMessages: number;
+    userMessages: number;
+    agentMessages: number;
+    callDurationSecs: number;
+  };
+  createdAt?: string;
+}
+
+export interface ModuleAttempt {
+  _id: string;
+  module: string;
+  user: AttemptUser;
+  attemptStatus: AttemptStatus;
+  attemptReport?: DetailedAttemptReport | null;
+  conversationId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export const getModuleAttempts = async (
+  moduleId: string,
+): Promise<ModuleAttempt[]> => {
+  const res = await apiClient.get<{ data: ModuleAttempt[] }>(
+    `/api/attempts/getall/${moduleId}`,
+  );
   return res.data.data;
 };

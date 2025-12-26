@@ -9,8 +9,6 @@ import {
   ArrowLeft,
   Play,
   CheckCircle2,
-  Trophy,
-  MessageSquareText,
   UserCircle,
   Sparkles,
   BookOpen,
@@ -172,57 +170,7 @@ export default function SharedModuleDetail() {
           </div>
         </section>
 
-        {isCompleted && attempt.attemptReport && (
-          <section className="rounded-2xl bg-white border border-slate-200/60 shadow-xl shadow-slate-200/50 overflow-hidden">
-            <div className="bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-500 p-6">
-              <div className="flex items-center gap-3 text-white">
-                <CheckCircle2 className="w-6 h-6" />
-                <h2 className="text-xl font-bold">Assessment Results</h2>
-              </div>
-            </div>
-
-            <div className="p-8 space-y-6">
-              {attempt.attemptReport.score !== undefined && (
-                <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-bl from-teal-500/20 to-transparent rounded-bl-full" />
-                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-linear-to-tr from-cyan-500/20 to-transparent rounded-tr-full" />
-                  <div className="relative flex items-center gap-6">
-                    <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
-                      <Trophy className="w-8 h-8 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-slate-400 mb-1">
-                        Your Score
-                      </p>
-                      <div className="text-5xl font-black text-white">
-                        {attempt.attemptReport.score}
-                        <span className="text-2xl text-slate-500 font-semibold ml-1">
-                          / 100
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {attempt.attemptReport.feedback && (
-                <div className="rounded-2xl bg-linear-to-br from-slate-50 to-teal-50/50 border border-slate-200/60 p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-linear-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-md shadow-teal-500/20">
-                      <MessageSquareText className="w-5 h-5 text-white" />
-                    </div>
-                    <h3 className="font-bold text-slate-800">Feedback</h3>
-                  </div>
-                  <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">
-                    {attempt.attemptReport.feedback}
-                  </p>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
-
-        {isCompleted && !attempt.attemptReport && (
+        {isCompleted && (
           <section className="rounded-2xl bg-linear-to-br from-emerald-50 to-teal-50 border border-emerald-200/60 p-8">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/25">
@@ -233,7 +181,7 @@ export default function SharedModuleDetail() {
                   Assessment Completed
                 </h3>
                 <p className="text-emerald-600">
-                  Your results are being processed. Please check back later.
+                  Thank you for completing the assessment.
                 </p>
               </div>
             </div>
