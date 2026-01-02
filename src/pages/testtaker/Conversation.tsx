@@ -26,7 +26,9 @@ export default function Conversation() {
       console.log("Disconnected from ElevenLabs");
       setAgentState(null);
       toast.success("Conversation ended");
-      navigate(`/shared/${moduleId}`);
+      navigate(`/shared/${moduleId}`, {
+        state: { justCompleted: true, attemptId },
+      });
     },
     onError: (error: string) => {
       console.error("ElevenLabs error:", error);

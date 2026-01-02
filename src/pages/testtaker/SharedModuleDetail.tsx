@@ -1,4 +1,5 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSharedModuleById, startAttempt } from "@/queries/moduleQueries";
 import { useAuth } from "@/context/AuthContext";
@@ -12,12 +13,16 @@ import {
   UserCircle,
   Sparkles,
   BookOpen,
+  Loader2,
 } from "lucide-react";
 
 export default function SharedModuleDetail() {
   const { moduleId } = useParams<{ moduleId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
+
+  const justCompleted = location.state?.justCompleted as boolean | undefined;
 
   const {
     data: module,
@@ -27,7 +32,20 @@ export default function SharedModuleDetail() {
     queryKey: ["shared-module", moduleId],
     queryFn: () => getSharedModuleById(moduleId as string),
     enabled: !!moduleId && !!user,
+    refetchInterval: (query) => {
+      const attemptStatus = query.state.data?.attempt?.attemptStatus;
+      if (justCompleted && attemptStatus !== "COMPLETED") {
+        return 3000;
+      }
+      return false;
+    },
   });
+
+  useEffect(() => {
+    if (justCompleted && module?.attempt?.attemptStatus === "COMPLETED") {
+      window.history.replaceState({}, document.title);
+    }
+  }, [justCompleted, module?.attempt?.attemptStatus]);
 
   const startAttemptMutation = useMutation({
     mutationFn: () => startAttempt(moduleId as string),
@@ -81,7 +99,9 @@ export default function SharedModuleDetail() {
   const attempt = module.attempt;
   const hasAttempt = attempt !== null;
   const isCompleted = hasAttempt && attempt.attemptStatus === "COMPLETED";
-  const isPending = !hasAttempt || attempt?.attemptStatus === "PENDING";
+  const isProcessing = justCompleted && !isCompleted;
+  const isPending =
+    (!hasAttempt || attempt?.attemptStatus === "PENDING") && !isProcessing;
 
   const handleStartTest = () => {
     startAttemptMutation.mutate();
@@ -169,6 +189,25 @@ export default function SharedModuleDetail() {
             )}
           </div>
         </section>
+
+        {isProcessing && (
+          <section className="rounded-2xl bg-linear-to-br from-amber-50 to-orange-50 border border-amber-200/60 p-8">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
+                <Loader2 className="w-7 h-7 text-white animate-spin" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg text-amber-800">
+                  Processing Your Assessment
+                </h3>
+                <p className="text-amber-600">
+                  Please wait while we finalize your results. This may take a
+                  moment...
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
 
         {isCompleted && (
           <section className="rounded-2xl bg-linear-to-br from-emerald-50 to-teal-50 border border-emerald-200/60 p-8">
