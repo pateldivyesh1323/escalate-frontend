@@ -22,6 +22,7 @@ import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { getOrganizationStatistics } from "../../queries/moduleQueries";
+import { Link } from "react-router-dom";
 
 const OrganizationHome = ({ user }: { user: User | null }) => {
   const { data: statistics, isLoading } = useQuery({
@@ -70,19 +71,19 @@ const OrganizationHome = ({ user }: { user: User | null }) => {
               className="group border-slate-200 hover:border-green-300 hover:text-green-600 hover:bg-green-50/50"
               asChild
             >
-              <a href="/modules">
+              <Link to="/modules">
                 <FolderOpen className="w-4 h-4 mr-2 transition-colors" />
                 View Modules
-              </a>
+              </Link>
             </Button>
             <Button
               className="bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/25 group"
               asChild
             >
-              <a href="/modules/create">
+              <Link to="/modules/create">
                 <Plus className="w-4 h-4 mr-2 group-hover:rotate-90 transition-transform duration-300" />
                 New Module
-              </a>
+              </Link>
             </Button>
           </div>
         </div>

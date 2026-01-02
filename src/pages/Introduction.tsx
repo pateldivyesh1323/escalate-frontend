@@ -13,46 +13,19 @@ import {
   Star,
 } from "lucide-react";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
+import Navbar from "@/components/navigation/Navbar";
 
 export default function Introduction() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-primary">
-                <Brain className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold text-foreground">
-                EscalateConvo
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link to="/login">
-                <Button
-                  variant="ghost"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  Sign In
-                </Button>
-              </Link>
-              <Link to="/signup">
-                <Button className="bg-primary hover:bg-primary/90 shadow-md">
-                  Get Started
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Subtle gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-background to-slate-50/50" />
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-br from-slate-50 via-background to-slate-50/50" />
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-linear-to-l from-primary/5 to-transparent" />
 
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
           <div className="max-w-4xl mx-auto text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -174,7 +147,7 @@ export default function Introduction() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center border border-slate-200">
+                <div className="shrink-0 w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center border border-slate-200">
                   <Users className="h-6 w-6 text-slate-600" />
                 </div>
                 <div>
@@ -190,7 +163,7 @@ export default function Introduction() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                <div className="shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
                   <Brain className="h-6 w-6 text-primary" />
                 </div>
                 <div>
@@ -206,7 +179,7 @@ export default function Introduction() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center border border-amber-200">
+                <div className="shrink-0 w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center border border-amber-200">
                   <BarChart3 className="h-6 w-6 text-amber-600" />
                 </div>
                 <div>
@@ -224,7 +197,7 @@ export default function Introduction() {
 
             {/* Score Preview Card */}
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-amber-100/50 rounded-3xl transform rotate-3" />
+              <div className="absolute inset-0 bg-linear-to-br from-primary/10 via-transparent to-amber-100/50 rounded-3xl transform rotate-3" />
               <div className="relative bg-background rounded-2xl shadow-xl border border-border p-8">
                 <div className="text-center space-y-6">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
@@ -232,7 +205,7 @@ export default function Introduction() {
                     Sample Result
                   </div>
 
-                  <div className="w-28 h-28 mx-auto rounded-full bg-gradient-to-br from-primary to-green-600 flex items-center justify-center shadow-lg">
+                  <div className="w-28 h-28 mx-auto rounded-full bg-linear-to-br from-primary to-green-600 flex items-center justify-center shadow-lg">
                     <span className="text-4xl font-bold text-primary-foreground">
                       92
                     </span>
@@ -340,7 +313,7 @@ export default function Introduction() {
       {/* CTA Section */}
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="p-12 sm:p-16 rounded-3xl bg-gradient-to-br from-primary via-green-600 to-primary shadow-2xl relative overflow-hidden">
+          <div className="p-12 sm:p-16 rounded-3xl bg-linear-to-br from-primary via-green-600 to-primary shadow-2xl relative overflow-hidden">
             {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-400/20 rounded-full blur-2xl transform -translate-x-1/2 translate-y-1/2" />
